@@ -27,6 +27,11 @@ regex () {
     gawk 'match($0,/'$1'/, ary) {print ary['${2:-'0'}']}'
 }
 
+source ../shared.sh
+IFACE=$(get_iface)
+
+nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
+
 # set -x
 output=$(
 for i in $(seq 1 $parallelism); do
@@ -40,7 +45,7 @@ for i in $(seq 1 $parallelism); do
         current_server="$server_prefix.$current_suffix"
         echo >&2 "\t$i-th server: $current_server"
     fi
-    numactl -N 1 iperf3 -c $current_server -T s$i -p $port &;
+    numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port &;
 done
 )
 
