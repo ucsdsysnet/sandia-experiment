@@ -1,36 +1,33 @@
-#!/bin/bash
+#!/bin/zsh
 
 cd "$(dirname "$0")"
 
+. ../shared.sh
+IFACE=$(get_iface)
+
 declare -A HOST2IP=(
-    ["yeti-02"]="10.0.0.2"
     ["yeti-04"]="10.0.0.101"
     ["yak-03"]="10.0.0.102"
 )
 
 declare -A HOST2MAC=(
-    ["yeti-02"]="ec:0d:9a:68:21:b0"
     ["yeti-04"]="ec:0d:9a:68:21:a8"
     ["yak-03"]="ec:0d:9a:68:21:c0"
 )
 
-get_iface()
-{
-    echo "$(ibdev2netdev | cut -f5 -d' ')"
-    # echo "$(ibdev2netdev | grep 'mlx5' | regex 'mlx5.* port .* ==> (\w+)' 1)"
-}
-
-IFACE=$(get_iface)
 MY_HOST=$(hostname -s)
 MTU=1500
 
+# This function for some reason doesn't work in bash ...
+regex() {
+    gawk 'match($0,/'$1'/, ary) {print ary['${2:-'0'}']}';
+}
 
 set_ip()
 {
     MY_IP=${HOST2IP[$MY_HOST]}
-    MY_MAC=${HOST2MAC[$MY_HOST]}
-    if [ -z "$MY_IP" ] || [ -z "$MY_MAC" ]; then
-        echo >&2 "Host not found in IP or MAC mapping"
+    if [ -z "$MY_IP" ]; then
+        echo >&2 "Host not found in IP mapping"
         return 1
     fi
 
@@ -111,6 +108,20 @@ disable_hyperthreading()
     echo
 }
 
+enable_hyperthreading()
+{
+    # Enable Hyper-Threading
+    echo "Enabling Hyper-Threading ..."
+    smt_active=$(cat /sys/devices/system/cpu/smt/active)
+    if [[ $smt_active -eq 0 ]]; then
+        echo "SMT currently inactive, turning on..."
+        echo on | sudo tee /sys/devices/system/cpu/smt/control
+        [[ $(cat /sys/devices/system/cpu/smt/active) -eq 1 ]] || echo >&2 "[Warning] Failed to turn on SMT."
+    fi
+    echo "Done"
+    echo
+}
+
 reset_nic_irq_mapping()
 {
     # Restart NIC driver to update interrupt handler mapping
@@ -157,16 +168,22 @@ mellanox_perf_tuning()
     echo "Applying Mellanox performance tuning ..."
     # 3.1 IRQ Affinity
     sudo /etc/init.d/irqbalance stop
+
+    # ******** READ THIS ********
     # Manuall check: If all the rows are “fffff” or “00000”, it means it did not work and the irqbalance needs to be restarted.
+    echo >&2
+    echo >&2 "******** PLEASE manually check below ********"
+    echo >&2 "If all the rows are “fffff” or “00000”, it means it did not work and the irqbalance needs to be restarted."
+    echo >&2
     show_irq_affinity.sh $IFACE
     # 3.1.2
     nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
-    set_irq_affinity_bynode.sh $nic_local_numa_node $IFACE
+    sudo set_irq_affinity_bynode.sh $nic_local_numa_node $IFACE
 
     # 3.4 NUMA tuning
     numa_local_cpulist=$(cat /sys/devices/system/node/node$nic_local_numa_node/cpulist)
     # Pin to NIC-local numa node like this:
-    taskset -c $numa_local_cpulist ls
+    taskset -c $numa_local_cpulist echo "Pin to NIC-local numa node like this"
 
     # 3.9 sysctl tuning
     sudo sysctl -w net.ipv4.tcp_timestamps=0
@@ -189,7 +206,7 @@ sigcomm21_host_network_stack_optimization()
     sudo ethtool -K $IFACE tso on
     sudo ethtool -K $IFACE gro on
     sudo ethtool -K $IFACE lro off
-    sudo ip link set $IFACE mtu 9000
+    sudo ip link set $IFACE mtu $MTU
     sudo ethtool -K $IFACE ntuple on
 }
 
@@ -204,7 +221,8 @@ main()
 
     # performance tuning
     set_cpu_high_performance
-    disable_hyperthreading
+    # disable_hyperthreading
+    enable_hyperthreading
     set_mellanox_cx5_pci_settings
     reset_nic_irq_mapping
     disable_daemon_processes
