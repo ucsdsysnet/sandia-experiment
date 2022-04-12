@@ -231,9 +231,10 @@ main()
         set_mellanox_cx5_pci_settings
         reset_nic_irq_mapping
         mellanox_perf_tuning
+        sigcomm21_host_network_stack_optimization
+    else
+        sudo ethtool -K $IFACE gso on
     fi
-
-    sigcomm21_host_network_stack_optimization
 }
 
 # set -e
