@@ -4,6 +4,7 @@ cd "$(dirname "$0")"
 
 . ../shared.sh
 IFACE=$(get_iface)
+IFACE_CX5=$(get_cx5_iface)
 
 declare -A HOST2IP=(
     ["yeti-04"]="10.0.0.101"
@@ -207,7 +208,7 @@ sigcomm21_host_network_stack_optimization()
     sudo ethtool -K $IFACE tso on
     sudo ethtool -K $IFACE gro on
     sudo ethtool -K $IFACE lro off
-    sudo ip link set $IFACE mtu $MTU
+    # sudo ip link set $IFACE mtu 9000
     sudo ethtool -K $IFACE ntuple on
 }
 
@@ -218,16 +219,20 @@ main()
     # run_arp
     # sudo ethtool --set-priv-flags $IFACE sniffer off
     sudo ip link set $IFACE mtu $MTU
-    # set_mlnx_qos
 
     # performance tuning
     set_cpu_high_performance
     # disable_hyperthreading
     enable_hyperthreading
-    set_mellanox_cx5_pci_settings
-    reset_nic_irq_mapping
     disable_daemon_processes
-    mellanox_perf_tuning
+
+    if [[ "$IFACE" == "$IFACE_CX5" ]]; then
+        # set_mlnx_qos
+        set_mellanox_cx5_pci_settings
+        reset_nic_irq_mapping
+        mellanox_perf_tuning
+    fi
+
     sigcomm21_host_network_stack_optimization
 }
 
