@@ -12,6 +12,7 @@
 - `ofed_info -s`: MLNX_OFED_LINUX-5.5-1.0.3.2
 
 ### Scripts
+- Run [install-dependencies.sh](./scripts/setup/install-dependencies.sh) to install dependencies, covered in the section below.
 - Run [setup-host.sh](./scripts/setup/setup-host.sh) on both machines to tune for best performance. See script for detailed optimizations broken into separate functions.
 - Run [setup-src-host.sh](./scripts/setup/setup-src-host.sh) to add `tc` TX queue mapping rules for each IP. See comments in script for details.
 - Run [setup-dst-host.sh](./scripts/setup/setup-dst-host.sh) to add multiple IPs on the destination host. We can further scale this with more IPs/interface or more machines.
