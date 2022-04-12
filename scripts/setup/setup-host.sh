@@ -156,7 +156,8 @@ set_mellanox_cx5_pci_settings()
         echo "Current MaxReadReq is $maxreadreq_size, setting to 4096 ..."
         # This number came from https://certification.canonical.com/cert-notes/network-tuning/
         # There used to be a Mellanox article that explains why it's 5936, but it can no longer be found.
-        sudo setpci -s $pcidevice 68.w=5936
+        # Bit masking as suggested by alexforencich
+        sudo setpci -s $pcidevice CAP_EXP+8.w=5000:7000
     fi
     maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | regex 'MaxReadReq ([0-9]+) bytes' 1)
     echo "Current MaxReadReq is $maxreadreq_size"
