@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+cd "$(dirname "$0")"
+
 parallelism=1
 server=localhost
 
@@ -49,7 +51,12 @@ for i in $(seq 1 $parallelism); do
 done
 )
 
+# set -x
 sender_total_tput=$(echo $output | grep "sender" | regex '([0-9.]*) Gbits\/sec' 1 | awk '{sum+=$1} END {print sum}')
+sender_total_tput_mbps=$(echo $output | grep "sender" | regex '([0-9.]*) Mbits\/sec' 1 | awk '{sum+=$1} END {print sum}')
+sender_total_tput=$(echo "scale=3; ${sender_total_tput:-0} + ${sender_total_tput_mbps:-0}/1000" | bc -l)
 receiver_total_tput=$(echo $output | grep "receiver" | regex '([0-9.]*) Gbits\/sec' 1 | awk '{sum+=$1} END {print sum}')
+receiver_total_tput_mbps=$(echo $output | grep "receiver" | regex '([0-9.]*) Mbits\/sec' 1 | awk '{sum+=$1} END {print sum}')
+receiver_total_tput=$(echo "scale=3; ${receiver_total_tput:-0} + ${receiver_total_tput_mbps:-0}/1000" | bc -l)
 
 echo "parallel: $parallelism, sender: $sender_total_tput, receiver: $receiver_total_tput"
