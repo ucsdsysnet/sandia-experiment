@@ -1,0 +1,3 @@
+[submodule "thirdparty/corundum"]
+	path = thirdparty/corundum
+	url = https://github.com/corundum/corundum.git
