@@ -21,7 +21,7 @@ done
 
 sudo ip link set $IFACE up
 ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $IFACE
-sudo ip addr add 10.0.$ip_octet3.100/24 dev $IFACE
+sudo ip addr add 10.0.$ip_octet3.100/22 dev $IFACE
 
 # See multiq in https://man7.org/linux/man-pages/man8/tc.8.html
 echo "Reseting qdisc to default ..."

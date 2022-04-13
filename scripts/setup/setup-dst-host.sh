@@ -25,5 +25,5 @@ ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr
 # Destination host:
 [[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
 for i in $(seq 0 $MAX_IP); do
-    sudo ip addr add 10.0.$ip_octet3.$((200 + $i))/24 dev $IFACE
+    sudo ip addr add 10.0.$ip_octet3.$((200 + $i))/22 dev $IFACE
 done
