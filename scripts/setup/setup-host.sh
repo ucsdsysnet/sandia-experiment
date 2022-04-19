@@ -235,6 +235,9 @@ main()
     else
         sudo ethtool -K $IFACE gso on
     fi
+
+    # Explicitly turning off TSO for now, for fair comparison between CX-5 and Corundum
+    sudo ethtool -K $IFACE tso off
 }
 
 # set -e
