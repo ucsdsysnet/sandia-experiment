@@ -66,3 +66,7 @@ if [[ $ENABLE_TC_MAPPING -eq 1 ]]; then
                         action skbedit queue_mapping $i
     done
 fi
+
+# This is need to for the above egress queue assignment to preserve and not overwritten by XPS.
+echo "Disabling XPS ..."
+sudo ./xps_setup.sh --dev DEVICE --default --disable
