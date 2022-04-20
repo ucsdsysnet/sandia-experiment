@@ -2,8 +2,9 @@
 
 ## Host setup
 ### Hardware
-- src node (yak-03): 2 socket 20-core CPUs with HyperThreading
-- dst node (yeti-04): 2 socket 12-core CPUs with HyperThreading
+- Identical src/dst nodes (yeti-03/04), each with:
+    - 2 socket 20-core CPUs with HyperThreading (80 Linux cores total)
+    - 256GB DRAM
 - Both have a single 100G Mellanox ConnectX-5 NIC connected via a 100G Mellanox (Ethernet) switch.
 
 ### OS/Software
