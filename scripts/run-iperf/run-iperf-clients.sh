@@ -31,6 +31,8 @@ regex () {
 
 source ../shared.sh
 IFACE=$(get_iface)
+IFACE_CX5=$(get_cx5_iface)
+[[ "$IFACE" == "$IFACE_CX5" ]] && ip_octet3=1 || ip_octet3=2
 
 nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
 
@@ -38,6 +40,8 @@ nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
 output=$(
 for i in $(seq 1 $parallelism); do
     port=$(echo "5100+$i" | bc);
+    bind_src_ip_last_octet=100
+    bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
     current_server=$server
     if [[ $USE_SEPARATE_SERVER -eq 1 ]]; then
         echo >&2 "Using separate servers ..."
@@ -45,9 +49,12 @@ for i in $(seq 1 $parallelism); do
         server_suffix=${server##*.}
         current_suffix=$(echo "$server_suffix + $i" | bc)
         current_server="$server_prefix.$current_suffix"
-        echo >&2 "\t$i-th server: $current_server"
+        bind_src_ip_last_octet=$(echo "100 + $i" | bc)
+        bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
+        echo >&2 "\t$i-th client: $bind_src_ip, server: $current_server"
     fi
-    numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port &;
+    bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
+    numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port -B $bind_src_ip &;
 done
 )
 
