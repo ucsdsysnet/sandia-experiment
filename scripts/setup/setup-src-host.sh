@@ -69,4 +69,7 @@ fi
 
 # This is need to for the above egress queue assignment to preserve and not overwritten by XPS.
 echo "Disabling XPS ..."
-sudo ./xps_setup.sh --dev DEVICE --default --disable
+tmpdir=$(mktemp -d)
+cp ./xps_setup.sh $tmpdir/
+sudo bash $tmpdir/xps_setup.sh --dev $IFACE --default --disable
+rm -r $tmpdir
