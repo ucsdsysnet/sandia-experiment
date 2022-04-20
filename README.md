@@ -29,6 +29,9 @@ for Mellanox Network Adapters](https://network.nvidia.com/pdf/prod_software/Perf
 - We run multiple concurrent `iperf3` processes in order to use multiple cores, as the default multithread mode `iperf3 -P <num-threads>` seems to be limited to a single core.
 - The following scripts manages multiple `iperf3` client/server processes and reports the aggregate throughput on the client side.
     - On server side / destination host, run [run-iperf-servers.sh](./scripts/run-iperf/run-iperf-servers.sh) `-p <num-processes>`, which starts up separate `iperf3` server processes using distinct consecutive ports and keeps them in the background.
-    - The on client side / source host, run [run-iperf-clients.sh](./scripts/run-iperf/run-iperf-clients.sh) `-p <num-processes> -s <server-ip>` for single IP mode, or [run-iperf-clients.sh](./scripts/run-iperf/run-iperf-clients.sh) `-p <num-processes> -s <server-ip-base> --separate-servers` for accessing iperf processes with multiple IPs. `<server-ip-base>` is one less than the first destination IP, which in my case was `10.0.0.200`, since [setup-dst-host.sh](./scripts/setup/setup-dst-host.sh) set the IPs starting from `10.0.0.201`.
+    - The on client side / source host, run
+        - [run-iperf-clients.sh](./scripts/run-iperf/run-iperf-clients.sh) `-p <num-processes> -s <server-ip>` for single IP mode, or
+        - [run-iperf-clients.sh](./scripts/run-iperf/run-iperf-clients.sh) `-p <num-processes> -s <server-ip-base> --separate-servers` for accessing iperf processes with multiple IPs.
+        Note that `<server-ip-base>` is one less than the first destination IP, which in my case was `10.0.0.200`, since [setup-dst-host.sh](./scripts/setup/setup-dst-host.sh) set the IPs starting from `10.0.0.201`.
     - Client `iperf3` processes will exit normally, whereas server `iperf3` processes can be manually killed using [kill-iperf-processes.sh](./scripts/run-iperf/kill-iperf-processes.sh).
 - CPU utilization is "measured" by watching `top/htop`.
