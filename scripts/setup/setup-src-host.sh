@@ -58,12 +58,14 @@ if [[ $ENABLE_TC_MAPPING -eq 1 ]]; then
         # sudo tc filter add dev $IFACE protocol ip parent 1: prio 1 u32 \
         #                 match ip dst 10.0.$ip_octet3.$(echo "200 + $i" | bc) \
         #                 action skbedit queue_mapping $i
-        # sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $i \
-        #                 match ip dst 10.0.$ip_octet3.$(echo "200 + $i" | bc) \
-        #                 action skbedit queue_mapping $i
+        # Note: Either of the two ways below works, although matching on src ip requires
+        #   iperf3 client binding and multiple IPs on sender side.
         sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $i \
-                        match ip src 10.0.$ip_octet3.$(echo "100 + $i" | bc) \
+                        match ip dst 10.0.$ip_octet3.$(echo "200 + $i" | bc) \
                         action skbedit queue_mapping $i
+        # sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $i \
+        #                 match ip src 10.0.$ip_octet3.$(echo "100 + $i" | bc) \
+        #                 action skbedit queue_mapping $i
     done
 fi
 

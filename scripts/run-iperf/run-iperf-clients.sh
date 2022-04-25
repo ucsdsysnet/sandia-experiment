@@ -54,6 +54,7 @@ for i in $(seq 1 $parallelism); do
         echo >&2 "\t$i-th client: $bind_src_ip, server: $current_server"
     fi
     bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
+    # Note: -B $bind_src_ip not needed if not using match on src ip.
     numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port -B $bind_src_ip &;
 done
 )
