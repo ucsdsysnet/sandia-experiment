@@ -1,10 +1,20 @@
 #/bin/bash
 
-# Get interface name for Mellanox CX-5
+SENDER_HOSTNAME="yeti-03"
+
+# Select interface: Corundum or ConnectX-5
 get_iface()
 {
-    # get_corundum_iface
-    get_cx5_iface
+    hostname="$(hostname -s)"
+    if [[ "$hostname" == "$SENDER_HOSTNAME" ]]; then
+        echo >&2 "$hostname (sender): using ConnectX-5"
+        # get_corundum_iface
+        get_cx5_iface
+    else
+        echo >&2 "$hostname (receiver): using ConnectX-5"
+        # get_corundum_iface
+        get_cx5_iface
+    fi
 }
 
 get_corundum_iface()
