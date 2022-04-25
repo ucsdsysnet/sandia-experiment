@@ -232,12 +232,12 @@ main()
         reset_nic_irq_mapping
         mellanox_perf_tuning
         sigcomm21_host_network_stack_optimization
+        # Explicitly turning off TSO for now, for fair comparison between CX-5 and Corundum
+        sudo ethtool -K $IFACE tso off
+        sudo ethtool -K $IFACE gso on
     else
         sudo ethtool -K $IFACE gso on
     fi
-
-    # Explicitly turning off TSO for now, for fair comparison between CX-5 and Corundum
-    sudo ethtool -K $IFACE tso off
 }
 
 # set -e
