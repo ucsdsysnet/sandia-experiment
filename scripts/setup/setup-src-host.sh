@@ -50,7 +50,7 @@ sudo tc qdisc add dev $IFACE clsact
 
 # See queue_mapping in https://man7.org/linux/man-pages/man8/tc-skbedit.8.html
 echo "Removing existing TC filters ..."
-filter_count=$(tc filter show dev ens4 egress | wc -l)
+filter_count=$(tc filter show dev $IFACE egress | wc -l)
 [[ filter_count -gt 0 ]] && sudo tc filter del dev $IFACE egress
 if [[ $ENABLE_TC_MAPPING -eq 1 ]]; then
     echo "Adding skbedit rules for explicit TX queue mapping ..."
