@@ -51,11 +51,12 @@ for i in $(seq 1 $parallelism); do
         current_server="$server_prefix.$current_suffix"
         bind_src_ip_last_octet=$(echo "100 + $i" | bc)
         bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
-        echo >&2 "\t$i-th client: $bind_src_ip, server: $current_server"
+        echo >&2 "\t$i-th server: $current_server"
     fi
     bind_src_ip="10.0.$ip_octet3.$bind_src_ip_last_octet"
-    # Note: -B $bind_src_ip not needed if not using match on src ip.
-    numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port -B $bind_src_ip &;
+    # Note: -B $bind_src_ip is needed if using match on src ip.
+    #   Also enable assign-multiple-ips in setup-src.host.sh script.
+    numactl -N $nic_local_numa_node iperf3 -c $current_server -T s$i -p $port &;
 done
 )
 
