@@ -36,3 +36,8 @@ for Mellanox Network Adapters](https://network.nvidia.com/pdf/prod_software/Perf
         Note that `<server-ip-base>` is one less than the first destination IP, which in my case was `10.0.0.200`, since [setup-dst-host.sh](./scripts/setup/setup-dst-host.sh) set the IPs starting from `10.0.0.201`.
     - Client `iperf3` processes will exit normally, whereas server `iperf3` processes can be manually killed using [kill-iperf-processes.sh](./scripts/run-iperf/kill-iperf-processes.sh).
 - CPU utilization is "measured" by watching `top/htop`.
+
+### Verification
+We can verify that per-TX-queue mapping filters worked by checking these counters before/after the runs:
+- `ethtool -S <iface> | grep "tx[0-9]*_packets"`
+- `tc -s filter show dev <iface> egress`
