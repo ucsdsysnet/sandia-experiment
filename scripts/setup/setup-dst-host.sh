@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-TOTAL_IP_GROUPS=8
+TOTAL_IP_GROUPS=1
 
 source ../shared.sh
 IFACE=$(get_iface)

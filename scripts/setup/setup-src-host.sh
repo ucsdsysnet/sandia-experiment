@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")"
 
-TOTAL_RULES_GROUPS=96
+TOTAL_RULES_GROUPS=1
 
 source ../shared.sh
 IFACE=$(get_iface)
