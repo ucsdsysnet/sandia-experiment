@@ -2,6 +2,8 @@
 
 cd "$(dirname "$0")"
 
+TOTAL_IP_GROUPS=8
+
 source ../shared.sh
 IFACE=$(get_iface)
 IFACE_CX5=$(get_cx5_iface)
@@ -24,6 +26,9 @@ ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr
 
 # Destination host:
 [[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
-for i in $(seq 0 $MAX_IP); do
-    sudo ip addr add 10.0.$ip_octet3.$((200 + $i))/22 dev $IFACE
+for j in $(seq 1 $TOTAL_IP_GROUPS); do
+    ip_octet2=$j
+    for i in $(seq 0 $MAX_IP); do
+        sudo ip addr add 10.$ip_octet2.$ip_octet3.$((200 + $i))/8 dev $IFACE
+    done
 done
