@@ -6,7 +6,7 @@ TOTAL_IP_GROUPS=1
 
 source ../shared.sh
 IFACE=$(get_cx5_iface)
-ip_octet3_dst=2
+ip_octet3_dst=20
 
 for arg in "$@"
 do
