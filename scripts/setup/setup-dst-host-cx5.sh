@@ -28,6 +28,6 @@ ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr
 # for j in $(seq 1 $TOTAL_IP_GROUPS); do
     # ip_octet2=$j
     for i in $(seq 0 $MAX_IP); do
-        sudo ip addr add 192.168.$ip_octet3_dst.$((100 + $i))/8 dev $IFACE
+        sudo ip addr add 10.10.$ip_octet3_dst.$((100 + $i))/16 dev $IFACE
     done
 # done

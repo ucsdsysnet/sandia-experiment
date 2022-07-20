@@ -29,7 +29,7 @@ sudo ip link set $IFACE up
 ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $IFACE
 [[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
 for i in $(seq 0 $MAX_IP); do
-    sudo ip addr add 192.168.$ip_octet3_src.$((100 + $i))/8 dev $IFACE
+    sudo ip addr add 10.10.$ip_octet3_src.$((100 + $i))/16 dev $IFACE
 done
 
 echo "Reseting qdisc to default ..."
@@ -65,7 +65,7 @@ if [[ $ENABLE_TC_MAPPING -eq 1 ]]; then
         # Note: Either of the two ways below works, although matching on src ip requires
         #   iperf3 client binding and multiple IPs on sender side.
         sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $filter_added \
-                        match ip dst 192.168.$ip_octet3_dst.$(echo "100 + $i" | bc) \
+                        match ip dst 10.10.$ip_octet3_dst.$(echo "100 + $i" | bc) \
                         action skbedit queue_mapping $i
         filter_added=$((filter_added + 1))
     done
