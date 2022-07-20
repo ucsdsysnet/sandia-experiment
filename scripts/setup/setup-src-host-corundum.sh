@@ -5,10 +5,10 @@ cd "$(dirname "$0")"
 TOTAL_RULES_GROUPS=1
 
 source ../shared.sh
-IFACE=$(get_cx5_iface)
+IFACE=$(get_corundum_iface)
 ip_octet3_src=10
 ip_octet3_dst=20
-network_prefix='10.10'
+network_prefix='10.100'
 network_prefix_len=16
 
 for arg in "$@"
