@@ -6,14 +6,14 @@ cd "$(dirname "$0")"
 IFACE=$(get_corundum_iface)
 
 declare -A HOST2IP=(
-    ["yeti-04"]="10.1.2.200"
-    ["yeti-01"]="10.0.1.100"
+    ["yeti-01"]="10.5.11.100"
+    ["yeti-04"]="10.5.44.100"
 )
 
-declare -A HOST2MAC=(
-    ["yeti-04"]="00:21:b2:25:1d:c0"
-    ["yeti-01"]="d0:94:66:48:a0:b1"
-)
+# declare -A HOST2MAC=(
+#     ["yeti-04"]="00:21:b2:25:1d:c0"
+#     ["yeti-01"]="d0:94:66:48:a0:b1"
+# )
 
 MY_HOST=$(hostname -s)
 MTU=1500
@@ -39,8 +39,8 @@ set_ip()
 
 main()
 {
-    sudo ip link set $IFACE up
-    set_ip
+    # sudo ip link set $IFACE up
+    # set_ip
     sudo ip link set $IFACE mtu $MTU
     sudo ethtool -K $IFACE gso on
 }

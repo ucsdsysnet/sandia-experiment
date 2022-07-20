@@ -6,14 +6,14 @@ cd "$(dirname "$0")"
 IFACE=$(get_cx5_iface)
 
 declare -A HOST2IP=(
-    ["yeti-04"]="192.168.1.4"
-    ["yeti-01"]="192.168.1.1"
+    ["yeti-01"]="192.168.11.100"
+    ["yeti-04"]="192.168.44.100"
 )
 
-declare -A HOST2MAC=(
-    ["yeti-04"]="ec:0d:9a:68:21:a8"
-    ["yeti-01"]="ec:0d:9a:68:21:88"
-)
+# declare -A HOST2MAC=(
+#     ["yeti-04"]="ec:0d:9a:68:21:a8"
+#     ["yeti-01"]="ec:0d:9a:68:21:88"
+# )
 
 MY_HOST=$(hostname -s)
 MTU=1500
@@ -124,7 +124,7 @@ main()
 {
     # sudo ip link set $IFACE up
     # set_ip
-    # sudo ip link set $IFACE mtu $MTU
+    sudo ip link set $IFACE mtu $MTU
 
     # set_mlnx_qos
     set_mellanox_cx5_pci_settings

@@ -1,19 +1,19 @@
 #/bin/bash
 
-SENDER_HOSTNAME="yeti-03"
+SENDER_HOSTNAME="yeti-01"
 
 # Select interface: Corundum or ConnectX-5
 get_iface()
 {
     hostname="$(hostname -s)"
     if [[ "$hostname" == "$SENDER_HOSTNAME" ]]; then
-        echo >&2 "$hostname (sender): using ConnectX-5"
-        # get_corundum_iface
-        get_cx5_iface
+        # echo >&2 "$hostname (sender): using ConnectX-5"
+        get_corundum_iface
+        # get_cx5_iface
     else
-        echo >&2 "$hostname (receiver): using ConnectX-5"
-        # get_corundum_iface
-        get_cx5_iface
+        # echo >&2 "$hostname (receiver): using ConnectX-5"
+        get_corundum_iface
+        # get_cx5_iface
     fi
 }
 
