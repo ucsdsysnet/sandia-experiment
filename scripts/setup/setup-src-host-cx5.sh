@@ -35,7 +35,7 @@ for i in $(seq 0 $MAX_IP); do
 done
 
 echo "Reseting qdisc to default ..."
-sudo tc qdisc del dev $IFACE root
+# sudo tc qdisc del dev $IFACE root
 sudo tc qdisc del dev $IFACE clsact
 
 # Initially, `multiq` was used in combination with skbedit according to
