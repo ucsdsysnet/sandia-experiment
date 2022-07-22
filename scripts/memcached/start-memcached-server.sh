@@ -27,10 +27,10 @@ done
 
 # source ../shared.sh
 # IFACE=$(get_iface)
-IFACE=ens1f0
+# IFACE=ens1f0
+# nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
 
-nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
-server_port_pair=''
+server_port_pair="$server:11211"
 for i in $(seq 1 $parallelism);
 do
     port=$(echo "11211+$i" | bc)
