@@ -18,6 +18,11 @@
 ./scripts/memcached/populate-memcached-with-data.sh -s 10.10.20.101 -p 11212
 ```
 
+#### Run memtier benachmark tool
+```
+./scripts/memcached/run-memtier-benchmark.sh -s 10.10.20.100 -p 32 --separate-servers
+```
+
 #### Kill memcached instances
 ```
 ./scripts/memcached/kill-memcached.sh
