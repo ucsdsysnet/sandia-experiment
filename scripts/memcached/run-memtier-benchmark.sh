@@ -9,12 +9,11 @@ server=127.0.0.1
 
 mkdir -p /tmp/data-tmp
 tmp_folder='/tmp/data-tmp'
-timestamp=$(date +%d-%m-%Y_%H-%M-%S)
+timestamp=$(date +%d-%m-%Y_%H%M%S)
 
 threads=1
-clients_per_thread=20
-requests_per_client=10000
-TAR_FILENAME="memt-t$threads-c$clients_per_thread-r$requests_per_client-$timestamp.tar"
+clients_per_thread=44
+requests_per_client=100000
 
 for arg in "$@"
 do
@@ -51,16 +50,32 @@ if [[ $USE_SEPARATE_SERVER -eq 1 ]]; then
         IFS='.' read ip1 ip2 ip3 ip4 <<< "$server"
         ip4=$(echo "$ip4 + ($i - 1) % 32 + 1" | bc)
         current_server="$ip1.$ip2.$ip3.$ip4"
-        logname="$tmp_folder/memt-$ip4-$timestamp.json"
-        out_file="$tmp_folder/memt-$ip4-$timestamp.txt"
-        hdrprefix="$tmp_folder/memt-$ip4-$timestamp"
+        if [[ $ip2 -eq 10 ]]; then
+            nic_type="cx5"
+        else
+            nic_type="fpga"
+        fi
+        logname="$tmp_folder/memt-$nic_type-$ip4-$timestamp.json"
+        out_file="$tmp_folder/memt-$nic_type-$ip4-$timestamp.txt"
+        hdrprefix="$tmp_folder/memt-$nic_type-$ip4-$timestamp"
         echo >&2 "\t$i-th server: $current_server  port: $port"
         
-        memtier_benchmark -s $current_server -p $port -P memcache_text --ratio=0:1 -t $threads -c $clients_per_thread -n $requests_per_client -o $out_file --json-out-file=$logname --hdr-file-prefix=$hdrprefix &
+        memtier_benchmark [${i}] -s $current_server -p $port -P memcache_text --ratio=0:1 -t $threads -c $clients_per_thread -n $requests_per_client -o $out_file --json-out-file=$logname --hdr-file-prefix=$hdrprefix &
+        pids[${i}]=$!
     done
 fi
 
+# for i in $parallelism; do
+#     ./procs[${i}] &
+#     pids[${i}]=$!
+# done
 
+# wait for all pids
+for pid in ${pids[*]}; do
+    wait $pid
+done
+
+TAR_FILENAME="memt-$nic_type-t$threads-c$clients_per_thread-r$requests_per_client-$timestamp.tar"
 cd /tmp/data-tmp && tar -czf $TAR_FILENAME $(cd /tmp/data-tmp && ls | grep $timestamp 2> /dev/null)
-# rm -f /tmp/data-tmp/*$timestamp* !(TAR_FILENAME)
-find . -type f ! -name "*$timestamp.tar" -exec rm -rf {} \; 
+find_cmd="$(find /tmp/data-tmp/ -type f ! -name \*.tar -delete)"
+echo $find_cmd
