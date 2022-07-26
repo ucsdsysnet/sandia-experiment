@@ -12,7 +12,7 @@ tmp_folder='/tmp/data-tmp'
 timestamp=$(date +%d-%m-%Y_%H%M%S)
 
 threads=1
-clients_per_thread=44
+clients_per_thread=22
 requests_per_client=100000
 
 for arg in "$@"

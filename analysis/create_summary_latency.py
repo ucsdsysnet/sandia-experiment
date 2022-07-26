@@ -4,8 +4,11 @@ import tarfile
 import json
 import pandas as pd
 
-DATAPATH_RAW="/home/dathapathu/experiments/data-tmp/"
-DATAPATH_PROCESSED="/home/dathapathu/experiments/data-processed/"
+BASE_PATH = "/home/dathapathu/experiments/"
+
+DATAPATH_RAW = BASE_PATH+"data-tmp/"
+DATAPATH_PROCESSED = BASE_PATH+"data-processed/"
+DATAPATH_SUMMARY = BASE_PATH+"data-summary/"
 
 def load_experiments(experiment_name_pattern):
     num_local_files = 0
@@ -34,7 +37,9 @@ def get_summary(experiment_name_pattern, nic_type):
             flow_summary['p99_9'] = data['ALL STATS']['Gets']['Percentile Latencies']['p99.90']
             instance_summary = instance_summary.append(flow_summary, True)
             # print(flow_summary)
-    print(instance_summary)
+    # print(instance_summary)
+    log_name = DATAPATH_SUMMARY + "summary-c22-" + nic_type + ".csv"
+    instance_summary.to_csv(log_name, mode="w", header=True)
 
-# load_experiments("*25-07-2022_095308*")
-get_summary('25-07-2022_095308', 'cx5')
+load_experiments("*25-07-2022_101243*")
+get_summary('25-07-2022_101243', 'fpga')
