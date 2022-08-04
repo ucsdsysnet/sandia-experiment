@@ -51,7 +51,8 @@ sudo tc filter add dev ens4 egress prio 1 handle 1: protocol ip u32 divisor 64
 
 for i in {1..32}; do
     # x=$( printf "%x" $i ) ; 
-    sudo tc filter add dev ens4 egress protocol ip prio 1 u32 ht 1:$[i-1]: \
+    # sudo tc filter add dev ens4 egress protocol ip prio 1 u32 ht 1:$[i-1]: \
+    sudo tc filter add dev ens4 egress protocol ip prio 1 u32 ht 1: \
                       hashkey mask 0x000000ff at 16 \
                       match ip dst 10.10.20.$(echo "100 + $i" | bc) \
                       action skbedit queue_mapping $i
