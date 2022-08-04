@@ -19,7 +19,7 @@ network_prefix_len=16
 # [[ filter_count -gt 0 ]] && sudo tc filter del dev $IFACE egress
 
 #create a hashtable with 32 buckets in egress path
-sudo tc filter add dev ens4 egress prio 99 handle 2: protocol ip u32 divisor 64
+sudo tc filter add dev ens4 egress prio 1 handle 2: protocol ip u32 divisor 64
 
 # for i in {1..32}; do
 #     x=$( printf "%x" $i ) ; 
@@ -35,18 +35,18 @@ sudo tc filter add dev ens4 egress prio 99 handle 2: protocol ip u32 divisor 64
 #                       match ip src 192.168.8.0/24 classid 1:1
 
 # Direct traffic in root hashtable 800: to hash table 2: we created earlier
-sudo tc filter add dev ens4 egress protocol ip prio 99 \
-        u32 ht 800:: \
-        match ip dst 10.10.20.0/24 \
-        link 2:
+# sudo tc filter add dev ens4 egress protocol ip prio 1 \
+#         u32 ht 800:: \
+#         match ip dst 10.10.20.0/24 \
+#         link 2:
 
 #Create filters and add them to the each bucket in hash table 2:
 for i in {1..32}; do
     # x=$( printf "%x" $i ) ; 
-    sudo tc filter add dev ens4 egress protocol ip u32 \
+    sudo tc filter add dev ens4 egress protocol ip prio 1 u32 \
                       ht 2:$[i-1]: \
-                      match ip dst 10.10.20.$(echo "100 + $i" | bc)/32 \
-                    #   action skbedit queue_mapping $i
+                      match ip dst 10.10.20.$(echo "100 + $i" | bc) \
+                      action skbedit queue_mapping $i
 done
 
 # for i in {1..32}; do
