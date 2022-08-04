@@ -27,16 +27,16 @@ done
 
 # Source host:
 
-sudo ip link set $IFACE up
-ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $IFACE
-[[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
-for i in $(seq 0 $MAX_IP); do
-    sudo ip addr add $network_prefix.$ip_octet3_src.$((100 + $i))/$network_prefix_len dev $IFACE
-done
+# sudo ip link set $IFACE up
+# ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $IFACE
+# [[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
+# for i in $(seq 0 $MAX_IP); do
+#     sudo ip addr add $network_prefix.$ip_octet3_src.$((100 + $i))/$network_prefix_len dev $IFACE
+# done
 
 echo "Reseting qdisc to default ..."
 # sudo tc qdisc del dev $IFACE root
-sudo tc qdisc del dev $IFACE clsact
+# sudo tc qdisc del dev $IFACE clsact
 
 # Initially, `multiq` was used in combination with skbedit according to
 #   https://www.kernel.org/doc/Documentation/networking/multiqueue.txt
@@ -50,7 +50,7 @@ fi
 # However, we found the performance to be limited to using a single core,
 #   so we switched to `clsact` as suggested here:
 #   https://www.spinics.net/lists/netdev/msg365702.html
-sudo tc qdisc add dev $IFACE clsact
+# sudo tc qdisc add dev $IFACE clsact
 
 # See queue_mapping in https://man7.org/linux/man-pages/man8/tc-skbedit.8.html
 echo "Removing existing TC filters ..."

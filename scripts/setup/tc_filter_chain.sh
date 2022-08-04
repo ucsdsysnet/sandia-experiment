@@ -178,3 +178,9 @@ sudo tc filter add dev $IFACE egress protocol ip prio 1 u32 order 1 \
                       ht 8: sample u32 0x00000084 0x000000ff at 16 \
                       match ip dst $network_prefix.132 \
                       action skbedit queue_mapping 32
+
+echo "Disabling XPS ..."
+tmpdir=$(mktemp -d)
+cp ./xps_setup.sh $tmpdir/
+sudo bash $tmpdir/xps_setup.sh --dev $IFACE --default --disable
+rm -r $tmpdir

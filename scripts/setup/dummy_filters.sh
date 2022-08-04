@@ -10,8 +10,8 @@ network_prefix='10.44'
 network_prefix_len=16
 
 echo "Adding skbedit rules for explicit TX queue mapping ..."
-filter_added=2100
-for i in {2100..3124}; do
+filter_added=1036
+for i in {1036..2035}; do
     sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $filter_added \
                     match ip dst $network_prefix.$(echo $i%256 | bc).$(echo $i%256 | bc) \
                     action skbedit queue_mapping $i
