@@ -85,6 +85,7 @@ rm -r $tmpdir
 #tc filter show dev ens4 egress | grep match | wc -l
 #tc filter show dev ens4 egress
 #sudo tc filter del dev ens4 egress
+#tc -s filter show dev ens4 egress
 
 
 #sudo tc qdisc add dev eth2 root handle 1: mq

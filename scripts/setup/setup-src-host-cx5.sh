@@ -66,8 +66,8 @@ if [[ $ENABLE_TC_MAPPING -eq 1 ]]; then
         #                 action skbedit queue_mapping $i
         # Note: Either of the two ways below works, although matching on src ip requires
         #   iperf3 client binding and multiple IPs on sender side.
-        # sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $filter_added \
-        sudo tc filter add dev $IFACE egress protocol ip prio 1 u32 order $filter_added \
+        # sudo tc filter add dev $IFACE egress protocol ip prio 1 u32 order $filter_added \ (this line doesn't create unnecassary hashtables)
+        sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $filter_added \
                         match ip dst $network_prefix.$ip_octet3_dst.$(echo "100 + $i" | bc) \
                         action skbedit queue_mapping $i
         filter_added=$((filter_added + 1))
