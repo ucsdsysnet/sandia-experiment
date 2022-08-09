@@ -90,20 +90,6 @@ mellanox_perf_tuning()
     numa_local_cpulist=$(cat /sys/devices/system/node/node$nic_local_numa_node/cpulist)
     # Pin to NIC-local numa node like this:
     taskset -c $numa_local_cpulist echo "Pin to NIC-local numa node like this"
-
-    # 3.9 sysctl tuning
-    sudo sysctl -w net.ipv4.tcp_timestamps=0
-    sudo sysctl -w net.ipv4.tcp_sack=1
-    sudo sysctl -w net.core.netdev_max_backlog=250000
-    sudo sysctl -w net.core.rmem_max=2147483647
-    sudo sysctl -w net.core.wmem_max=2147483647
-    sudo sysctl -w net.core.rmem_default=4194304
-    sudo sysctl -w net.core.wmem_default=4194304
-    sudo sysctl -w net.core.optmem_max=4194304
-    sudo sysctl -w net.ipv4.tcp_rmem="4096 87380 2147483647"
-    sudo sysctl -w net.ipv4.tcp_wmem="4096 65536 2147483647"
-    sudo sysctl -w net.ipv4.tcp_low_latency=1
-    sudo sysctl -w net.ipv4.tcp_adv_win_scale=1
 }
 
 sigcomm21_host_network_stack_optimization()
