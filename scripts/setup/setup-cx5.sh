@@ -1,19 +1,13 @@
-#!/bin/zsh
+#!/bin/bash
+
+. scripts/setup/ip_interface.config
 
 cd "$(dirname "$0")"
 
-. ../shared.sh
-IFACE=$(get_cx5_iface)
-
 declare -A HOST2IP=(
-    ["yeti-01"]="192.168.11.100"
-    ["yeti-04"]="192.168.44.100"
+    [$cx5_sender_host]=$cx5_sender_ip
+    [$cx5_receiver_host]=$cx5_receiver_ip
 )
-
-# declare -A HOST2MAC=(
-#     ["yeti-04"]="ec:0d:9a:68:21:a8"
-#     ["yeti-01"]="ec:0d:9a:68:21:88"
-# )
 
 MY_HOST=$(hostname -s)
 MTU=1500
@@ -32,10 +26,10 @@ set_ip()
     fi
 
     # delete existing IPs
-    ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $IFACE
+    ip addr show $cx5_IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr del {} dev $cx5_IFACE
 
-    sudo ip addr add $MY_IP/32 dev $IFACE
-    ACTUAL_IP=$(ip addr show $IFACE | grep "inet " | awk '{print $2}')
+    sudo ip addr add $MY_IP/32 dev $cx5_IFACE
+    ACTUAL_IP=$(ip addr show $cx5_IFACE | grep "inet " | awk '{print $2}')
     if [ "$MY_IP/32" != "$ACTUAL_IP" ]; then
         echo >&2 "Failed to set IP to $MY_IP. Got $ACTUAL_IP instead."
         return 1
@@ -64,7 +58,7 @@ reset_nic_irq_mapping()
     echo "Restarting NIC driver to update IRQ mapping ..."
     sudo /etc/init.d/openibd restart
     sleep 5
-    irq_count=$(cat /proc/interrupts | grep $IFACE- | wc -l)
+    irq_count=$(cat /proc/interrupts | grep $cx5_IFACE- | wc -l)
     core_count=$(nproc)
     if [[ $irq_count -ne $core_count ]]; then
         echo "[Warning] NIC IRQ count not equal to CPU count."
@@ -85,10 +79,10 @@ mellanox_perf_tuning()
     echo >&2 "******** PLEASE manually check below ********"
     echo >&2 "If all the rows are “fffff” or “00000”, it means it did not work and the irqbalance needs to be restarted."
     echo >&2
-    show_irq_affinity.sh $IFACE
+    show_irq_affinity.sh $cx5_IFACE
     # 3.1.2
-    nic_local_numa_node=$(cat /sys/class/net/$IFACE/device/numa_node)
-    sudo set_irq_affinity_bynode.sh $nic_local_numa_node $IFACE
+    nic_local_numa_node=$(cat /sys/class/net/$cx5_IFACE/device/numa_node)
+    sudo set_irq_affinity_bynode.sh $nic_local_numa_node $cx5_IFACE
 
     # 3.4 NUMA tuning
     numa_local_cpulist=$(cat /sys/devices/system/node/node$nic_local_numa_node/cpulist)
@@ -113,27 +107,25 @@ mellanox_perf_tuning()
 sigcomm21_host_network_stack_optimization()
 {
     # Source: https://www.cs.cornell.edu/~ragarwal/pubs/network-stack.pdf
-    sudo ethtool -K $IFACE tso on
-    sudo ethtool -K $IFACE gro on
-    sudo ethtool -K $IFACE lro off
-    # sudo ip link set $IFACE mtu 9000
-    sudo ethtool -K $IFACE ntuple on
+    # sudo ethtool -K $cx5_IFACE tso on
+    sudo ethtool -K $cx5_IFACE gro on
+    sudo ethtool -K $cx5_IFACE lro off
+    # sudo ip link set $cx5_IFACE mtu 9000
+    sudo ethtool -K $cx5_IFACE ntuple on
 }
 
 main()
 {
-    # sudo ip link set $IFACE up
+    # sudo ip link set $cx5_IFACE up
     # set_ip
-    sudo ip link set $IFACE mtu $MTU
+    # sudo ip link set $cx5_IFACE mtu $MTU
 
-    # set_mlnx_qos
-    set_mellanox_cx5_pci_settings
-    reset_nic_irq_mapping
-    mellanox_perf_tuning
-    sigcomm21_host_network_stack_optimization
-    # Explicitly turning off TSO for now, for fair comparison between CX-5 and Corundum
-    sudo ethtool -K $IFACE tso off
-    sudo ethtool -K $IFACE gso on
+    # set_mellanox_cx5_pci_settings
+    # reset_nic_irq_mapping
+    # mellanox_perf_tuning
+    # sigcomm21_host_network_stack_optimization
+    # sudo ethtool -K $cx5_IFACE tso off
+    # sudo ethtool -K $cx5_IFACE gso on
 }
 
 main
