@@ -29,7 +29,7 @@ create_dummy_filters()
     echo "Adding skbedit rules for explicit TX queue mapping ..."
     filter_added=33
     number_iterations=$((($number_dummy_filters + 255/2) / 255))
-    # echo $number_iterations
+    number_iterations=$((number_iterations - 1))
     for m in {0..255}; do
         for i in $( seq 0 $number_iterations )
         do
@@ -41,6 +41,8 @@ create_dummy_filters()
             # echo $filter_added
         done
     done
+
+    echo $filter_added
 
     # This is need to for the above egress queue assignment to preserve and not overwritten by XPS.
     echo "Disabling XPS ..."

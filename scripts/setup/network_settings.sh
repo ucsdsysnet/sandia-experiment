@@ -19,7 +19,7 @@ settings()
 {
     sudo ip link set $1 mtu $MTU
     sudo ethtool -K $1 gso on
-    sudo ip link set $1 up
+    # sudo ip link set $1 up
 }
 
 main()
