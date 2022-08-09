@@ -128,6 +128,7 @@ main()
     sigcomm21_host_network_stack_optimization
     sudo ethtool -K $cx5_IFACE tso off
     sudo ethtool -K $cx5_IFACE gso on
+    sudo ip link set $cx5_IFACE up
 }
 
 main
