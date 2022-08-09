@@ -38,7 +38,8 @@ set_ip()
 
 set_mellanox_cx5_pci_settings()
 {
-    pcidevice=$(lspci | grep -i ethernet | grep "ConnectX-5" | cut -d' ' -f 1)
+    # pcidevice=$(lspci | grep -i ethernet | grep "ConnectX-5" | cut -d' ' -f 1)
+    pcidevice=$(sudo lshw -c network -businfo | grep $cx5_IFACE | cut -d' ' -f 1 | sed -r 's/^.{9}//')
     maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | regex 'MaxReadReq ([0-9]+) bytes' 1)
     if [[ $maxreadreq_size -lt 4096 ]]; then
         echo "Current MaxReadReq is $maxreadreq_size, setting to 4096 ..."
