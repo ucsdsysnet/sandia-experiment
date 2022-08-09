@@ -12,4 +12,5 @@
 echo "$cx5_IFACE" "$cx5_sender_ip"
 
 IFS='.' read ip1 ip2 ip3 ip4 <<< "$cx5_src_ip"
-echo $ip1 
+test=$ip1.$ip2.$ip3.$(($ip4 + $ip1))
+echo $test

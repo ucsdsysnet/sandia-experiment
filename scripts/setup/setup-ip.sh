@@ -8,7 +8,7 @@ HOST_TYPE=$host_type
 for arg in "$@"
 do
 case $arg in
-    -t|--nictype)
+    -n|--nictype)
         shift
         NIC_TYPE=$1
         shift
@@ -33,7 +33,6 @@ setup_ip()
             sudo ip addr add $1.$2.$3.$(($4 + $i))/$network_prefix_len dev $5
         done
 }
-
 
 main()
 {
