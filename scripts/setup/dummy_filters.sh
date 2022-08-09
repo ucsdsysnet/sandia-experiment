@@ -1,27 +1,66 @@
 #!/bin/bash
 
-cd "$(dirname "$0")"
+. scripts/setup/ip_interface.config
 
-source ../shared.sh
-IFACE=$(get_corundum_iface)
-ip_octet3_src=10
-ip_octet3_dst=20
-network_prefix='10.44'
-network_prefix_len=16
+NIC_TYPE=$nic_type
+NUMBER_DUMMY_FILTERS=$number_dummy_filters
 
-echo "Adding skbedit rules for explicit TX queue mapping ..."
-filter_added=1036
-for i in {1036..2035}; do
-    sudo tc filter add dev $IFACE egress protocol ip u32 ht 800: order $filter_added \
-                    match ip dst $network_prefix.$(echo $i%256 | bc).$(echo $i%256 | bc) \
-                    action skbedit queue_mapping $i
-    filter_added=$((filter_added + 1))
-    # echo $filter_added
+for arg in "$@"
+do
+case $arg in
+    -n|--nictype)
+        shift
+        NIC_TYPE=$1
+        shift
+        ;;
+    -f|--dummyfilters)
+        shift
+        NUMBER_DUMMY_FILTERS=$1
+        shift
+        ;;
+esac
 done
 
-# This is need to for the above egress queue assignment to preserve and not overwritten by XPS.
-echo "Disabling XPS ..."
-tmpdir=$(mktemp -d)
-cp ./xps_setup.sh $tmpdir/
-sudo bash $tmpdir/xps_setup.sh --dev $IFACE --default --disable
-rm -r $tmpdir
+cd "$(dirname "$0")"
+
+#All dummy filters will be mapped to queue 64; This assumes that there are already 32 legitimate filters;
+create_dummy_filters()
+{
+    echo "Adding skbedit rules for explicit TX queue mapping ..."
+    filter_added=33
+    number_iterations=$((($number_dummy_filters + 255/2) / 255))
+    # echo $number_iterations
+    for m in {0..255}; do
+        for i in $( seq 0 $number_iterations )
+        do
+            sudo tc filter add dev $3 egress protocol ip u32 ht 800: order $filter_added \
+                            match ip dst $1.$2.$m.$i \
+                            action skbedit queue_mapping 64
+            # echo $m $i
+            filter_added=$((filter_added + 1))
+            # echo $filter_added
+        done
+    done
+
+    # This is need to for the above egress queue assignment to preserve and not overwritten by XPS.
+    echo "Disabling XPS ..."
+    tmpdir=$(mktemp -d)
+    cp ./xps_setup.sh $tmpdir/
+    sudo bash $tmpdir/xps_setup.sh --dev $3 --default --disable
+    rm -r $tmpdir
+}
+
+main()
+{
+    echo $NIC_TYPE
+    if [[ $NIC_TYPE = "fpga" ]]; then
+        echo "fpga"
+        IFS='.' read ip1 ip2 ip3 ip4 <<< "$dummy_ip"
+        create_dummy_filters $ip1 $ip2 $FPGA_IFACE 
+    else
+        IFS='.' read ip1 ip2 ip3 ip4 <<< "$dummy_ip"
+        create_dummy_filters $ip1 $ip2 $cx5_IFACE
+    fi
+}
+
+main
