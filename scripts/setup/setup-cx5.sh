@@ -13,9 +13,9 @@ MY_HOST=$(hostname -s)
 MTU=1500
 
 # This function for some reason doesn't work in bash ...
-regex() {
-    gawk 'match($0,/'$1'/, ary) {print ary['${2:-'0'}']}';
-}
+# regex() {
+#     gawk 'match($0,/'$1'/, ary) {print ary['${2:-'0'}']}';
+# }
 
 set_ip()
 {
@@ -40,7 +40,8 @@ set_mellanox_cx5_pci_settings()
 {
     # pcidevice=$(lspci | grep -i ethernet | grep "ConnectX-5" | cut -d' ' -f 1)
     pcidevice=$(sudo lshw -c network -businfo | grep $cx5_IFACE | cut -d' ' -f 1 | sed -r 's/^.{9}//')
-    maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | regex 'MaxReadReq ([0-9]+) bytes' 1)
+    # maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | regex 'MaxReadReq ([0-9]+) bytes' 1)
+    maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | cut -d' ' -f 5)
     if [[ $maxreadreq_size -lt 4096 ]]; then
         echo "Current MaxReadReq is $maxreadreq_size, setting to 4096 ..."
         # This number came from https://certification.canonical.com/cert-notes/network-tuning/
@@ -48,7 +49,7 @@ set_mellanox_cx5_pci_settings()
         # Bit masking as suggested by alexforencich
         sudo setpci -s $pcidevice CAP_EXP+8.w=5000:7000
     fi
-    maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | regex 'MaxReadReq ([0-9]+) bytes' 1)
+    maxreadreq_size=$(sudo lspci -s $pcidevice -vvv | grep MaxReadReq | cut -d' ' -f 5)
     echo "Current MaxReadReq is $maxreadreq_size"
     echo "Done"
 }
@@ -117,16 +118,16 @@ sigcomm21_host_network_stack_optimization()
 
 main()
 {
-    # sudo ip link set $cx5_IFACE up
-    # set_ip
-    # sudo ip link set $cx5_IFACE mtu $MTU
+    sudo ip link set $cx5_IFACE up
+    set_ip
+    sudo ip link set $cx5_IFACE mtu $MTU
 
-    # set_mellanox_cx5_pci_settings
-    # reset_nic_irq_mapping
-    # mellanox_perf_tuning
-    # sigcomm21_host_network_stack_optimization
-    # sudo ethtool -K $cx5_IFACE tso off
-    # sudo ethtool -K $cx5_IFACE gso on
+    set_mellanox_cx5_pci_settings
+    reset_nic_irq_mapping
+    mellanox_perf_tuning
+    sigcomm21_host_network_stack_optimization
+    sudo ethtool -K $cx5_IFACE tso off
+    sudo ethtool -K $cx5_IFACE gso on
 }
 
 main
