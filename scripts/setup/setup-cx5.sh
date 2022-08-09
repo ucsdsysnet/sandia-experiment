@@ -5,8 +5,8 @@
 cd "$(dirname "$0")"
 
 declare -A HOST2IP=(
-    [$cx5_sender_host]=$cx5_sender_ip
-    [$cx5_receiver_host]=$cx5_receiver_ip
+    [$cx5_src_host]=$cx5_src_ip
+    [$cx5_dst_host]=$cx5_dst_ip
 )
 
 MY_HOST=$(hostname -s)
