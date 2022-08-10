@@ -22,7 +22,7 @@
             "repeat": 1,
             "workloads": [
                 {
-                    "memcahced": {
+                    "memcached": {
                         "clients": 1,
                         "server_instances" : 1,
                         "cluster_mode": 0
@@ -42,7 +42,7 @@
                         "server_instances" : 1,
                         "cluster_mode": 0
                     },
-                    "memcahced": {
+                    "memcached": {
                         "clients": 1,
                         "server_instances" : 1,
                         "cluster_mode": 0

@@ -5,6 +5,7 @@ from datetime import datetime
 from collections import namedtuple, OrderedDict
 from contextlib import contextmanager, ExitStack
 import time
+import implementor as impl
 
 script_dir = os.path.dirname(__file__)
 
@@ -17,16 +18,17 @@ class Experiment:
     
     def run(self):
         with ExitStack() as stack:
-            print("Running", self.id)
+            # print("Running", self.id)
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
             for index, workload in enumerate(workload_types):
                 print(index, workload)
-                # switcher = {
-                #     'iperf': comFlowImpl.create_iperf_flows,
-                #     'memcached': comFlowImpl.create_web_video_flows
-                # }
-                # func = switcher.get(part, lambda: "Invalid test!")
+                switcher = {
+                    'iperf': impl.create_iperf_flows,
+                    'memcached': impl.create_memcached_flows
+                }
+                func = switcher.get(workload, lambda: "Invalid test!")
+                func() 
             # time.sleep(10)
 
 def load_experiments(all_experiments):
