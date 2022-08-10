@@ -9,21 +9,25 @@ import time
 script_dir = os.path.dirname(__file__)
 
 class Experiment:
-    def __init__(self, exp):
+    def __init__(self, id, exp):
+        self.id = id
         self.exp_time = (datetime.now().isoformat()
                             .replace(':','').replace('-','').split('.')[0])
         self.experiment = exp
     
     def run(self):
         with ExitStack() as stack:
-            print("Running", self.exp_time)
-            time.sleep(10)
+            print("Running", self.id)
+            workloads = self.experiment['workloads']
+            workload_types = workloads[0].keys()
+            print(workload_types)
+            # time.sleep(10)
 
 def load_experiments(all_experiments):
     experiments = OrderedDict()
     for i in range(len(all_experiments)):
         experiment_id = "Exp-" +  str(i) 
-        exp = Experiment(all_experiments[i])
+        exp = Experiment(experiment_id, all_experiments[i])
         experiments[experiment_id] = exp
     return experiments
 

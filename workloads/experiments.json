@@ -1,6 +1,8 @@
 {
     "experiments": [
         {
+            "server_list" : ["10.10.20.100"],
+            "client_list" : ["10.10.10.100"],
             "duration": 60,
             "repeat": 1,
             "workloads": [
@@ -14,6 +16,8 @@
             ]
         },
         {
+            "server_list" : ["10.10.20.100"],
+            "client_list" : ["10.10.10.100"],
             "duration": 60,
             "repeat": 1,
             "workloads": [
@@ -27,6 +31,8 @@
             ]
         },
         {
+            "server_list" : ["10.10.20.100"],
+            "client_list" : ["10.10.10.100"],
             "duration": 60,
             "repeat": 1,
             "workloads": [
