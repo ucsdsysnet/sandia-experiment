@@ -1,0 +1,48 @@
+{
+    "experiments": [
+        {
+            "duration": 60,
+            "repeat": 1,
+            "workloads": [
+                {
+                    "iperf": {
+                        "clients": 1,
+                        "server_instances" : 1,
+                        "cluster_mode": 0
+                    }
+                }
+            ]
+        },
+        {
+            "duration": 60,
+            "repeat": 1,
+            "workloads": [
+                {
+                    "memcahced": {
+                        "clients": 1,
+                        "server_instances" : 1,
+                        "cluster_mode": 0
+                    }
+                }
+            ]
+        },
+        {
+            "duration": 60,
+            "repeat": 1,
+            "workloads": [
+                {
+                    "iperf": {
+                        "clients": 1,
+                        "server_instances" : 1,
+                        "cluster_mode": 0
+                    },
+                    "memcahced": {
+                        "clients": 1,
+                        "server_instances" : 1,
+                        "cluster_mode": 0
+                    }
+                }
+            ]
+        }
+    ]
+}
