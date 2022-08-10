@@ -20,7 +20,13 @@ class Experiment:
             print("Running", self.id)
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
-            print(workload_types)
+            for index, workload in enumerate(workload_types):
+                print(index, workload)
+                # switcher = {
+                #     'iperf': comFlowImpl.create_iperf_flows,
+                #     'memcached': comFlowImpl.create_web_video_flows
+                # }
+                # func = switcher.get(part, lambda: "Invalid test!")
             # time.sleep(10)
 
 def load_experiments(all_experiments):
