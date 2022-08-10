@@ -3,6 +3,8 @@ import json
 import os 
 from datetime import datetime
 from collections import namedtuple, OrderedDict
+from contextlib import contextmanager, ExitStack
+import time
 
 script_dir = os.path.dirname(__file__)
 
@@ -11,7 +13,11 @@ class Experiment:
         self.exp_time = (datetime.now().isoformat()
                             .replace(':','').replace('-','').split('.')[0])
         self.experiment = exp
-        
+    
+    def run(self):
+        with ExitStack() as stack:
+            print("Running", self.exp_time)
+            time.sleep(10)
 
 def load_experiments(all_experiments):
     experiments = OrderedDict()
@@ -33,7 +39,8 @@ def main(args):
     # print(config)
     print('Going to run {} experiments'.format(len(config['experiments'])))
     exps = load_experiments(config['experiments'])
-    print(exps)
+    for experiment in exps.values():
+            experiment.run()
 
 def parse_args():
     """Parse commandline arguments"""
