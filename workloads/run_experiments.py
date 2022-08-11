@@ -76,6 +76,7 @@ def main(args):
     print('Going to run {} experiments'.format(len(config['experiments'])))
     exps = load_experiments(config['experiments'])
     for experiment in exps.values():
+        print("+++++++++++++++++", "Running Experiment:", experiment.id, "++++++++++++++++")
         for x in range(experiment.get_repeat()):
             experiment.run()
 

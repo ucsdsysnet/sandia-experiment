@@ -1,8 +1,6 @@
 def start_iperf_server(exp_obj, exp_template, workload, stack):
-    # print(exp_obj.name)
     log_name = { 'iperf_server' : '/tmp/test.log'}
     exp_obj.append_logs(log_name)
-    print(exp_obj.all_logs)
     # start_server_cmd = ('iperf3 --server '
     #                         '--bind {} '
     #                         '--port {} '
