@@ -3,8 +3,10 @@
         {
             "server_list" : ["10.10.20.100"],
             "client_list" : ["10.10.10.100"],
+            "server_list_wan" : ["128.110.219.9"],
+            "client_list_wan" : ["128.110.218.248"],
             "username" : "rukshani",
-            "key_filename" : "",
+            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [
@@ -20,8 +22,10 @@
         {
             "server_list" : ["10.10.20.100"],
             "client_list" : ["10.10.10.100"],
+            "server_list_wan" : ["128.110.219.9"],
+            "client_list_wan" : ["128.110.218.248"],
             "username" : "rukshani",
-            "key_filename" : "",
+            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [
@@ -37,8 +41,10 @@
         {
             "server_list" : ["10.10.20.100"],
             "client_list" : ["10.10.10.100"],
+            "server_list_wan" : ["128.110.219.9"],
+            "client_list_wan" : ["128.110.218.248"],
             "username" : "rukshani",
-            "key_filename" : "",
+            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [

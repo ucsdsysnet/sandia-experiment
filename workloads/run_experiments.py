@@ -54,7 +54,7 @@ class Experiment:
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Experiment!")
                 func()
-            # time.sleep(10)
+            time.sleep(60)
     
     def get_repeat(self):
         return self.experiment['repeat']

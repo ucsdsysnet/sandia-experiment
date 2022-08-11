@@ -3,7 +3,6 @@ from command import RemoteCommand, run_local_command, get_ssh_client, exec_comma
 def start_iperf_server(exp_obj, exp_template, workload, stack):
     log_name = { 'iperf_server' : '/tmp/iperf-server-{}-r{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
     exp_obj.append_logs(log_name)
-    print(log_name['iperf_server'])
 
     start_server_cmd = ('iperf3 --server '
                             '--bind {} '
@@ -17,7 +16,7 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
     print("iperf server cmd>", start_server_cmd)
 
     start_server = RemoteCommand(start_server_cmd,
-                                exp_template['server_list'][0],
+                                exp_template['server_list_wan'][0],
                                 username=exp_template['username'],
                                 logs=[log_name['iperf_server']],
                                 key_filename=exp_template['key_filename'])
