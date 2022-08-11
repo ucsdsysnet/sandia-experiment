@@ -18,18 +18,32 @@ class Experiment:
     
     def run(self):
         with ExitStack() as stack:
-            # print("Running", self.id)
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
+
+            #Start servers
             for index, workload in enumerate(workload_types):
-                print(index, workload)
-                switcher = {
-                    'iperf': impl.create_iperf_flows,
-                    'memcached': impl.create_memcached_flows
+                #Assumption - memached server instances needs to be up and populated before running experiments
+                server_switcher = {
+                    'iperf': lambda: impl.start_iperf_server(self.experiment, workloads[0]["iperf"])
                 }
-                func = switcher.get(workload, lambda: "Invalid test!")
-                func() 
+                func = server_switcher.get(workload, lambda: "Invalid Experiment!")
+                func()
+            
+            #Run clients
+            for index, workload in enumerate(workload_types):
+                #Assumption - memached server instances needs to be up and populated before running experiments
+                client_switcher = {
+                    'iperf': lambda: impl.start_iperf_clients(self.experiment, workloads[0]["iperf"]),
+                    'memcached': lambda: impl.start_memcached_clients(self.experiment, workloads[0]["memcached"])
+                }
+                func = client_switcher.get(workload, lambda: "Invalid Experiment!")
+                func()
+
             # time.sleep(10)
+    
+    def get_repeat(self):
+        return self.experiment['repeat']
 
 def load_experiments(all_experiments):
     experiments = OrderedDict()
@@ -52,6 +66,7 @@ def main(args):
     print('Going to run {} experiments'.format(len(config['experiments'])))
     exps = load_experiments(config['experiments'])
     for experiment in exps.values():
+        for x in range(experiment.get_repeat()):
             experiment.run()
 
 def parse_args():
