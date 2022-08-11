@@ -20,7 +20,10 @@ class Experiment:
 
         self.exp_time = (datetime.now().isoformat()
                             .replace(':','').replace('-','').split('.')[0])
+    
         self.experiment = exp
+
+        self.iteration = 0
         self.all_logs = []
         self.logs = {
             # 'iperf_server': '/tmp/iperf-{}-{}.csv'.format("iperf", self.exp_time)
@@ -29,7 +32,8 @@ class Experiment:
     def append_logs(self, log_file):
         self.all_logs.append(log_file)
 
-    def run(self):
+    def run(self, iteration):
+        self.iteration = iteration
         with ExitStack() as stack:
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
@@ -58,7 +62,7 @@ class Experiment:
 def load_experiments(all_experiments):
     experiments = OrderedDict()
     for i in range(len(all_experiments)):
-        experiment_id = "Exp-" +  str(i) 
+        experiment_id = "Exp" +  str(i) 
         exp = Experiment(experiment_id, all_experiments[i])
         experiments[experiment_id] = exp
     return experiments
@@ -78,7 +82,7 @@ def main(args):
     for experiment in exps.values():
         print("+++++++++++++++++", "Running Experiment:", experiment.id, "++++++++++++++++")
         for x in range(experiment.get_repeat()):
-            experiment.run()
+            experiment.run(x)
 
 def parse_args():
     """Parse commandline arguments"""
