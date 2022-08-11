@@ -1,5 +1,5 @@
 def start_iperf_server(exp_obj, exp_template, workload, stack):
-    log_name = { 'iperf_server' : '/tmp/iperf-server-{}-r{}-{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.name, exp_obj.exp_time)}
+    log_name = { 'iperf_server' : '/tmp/iperf-server-{}-r{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
     exp_obj.append_logs(log_name)
     print(exp_obj.all_logs)
     # start_server_cmd = ('iperf3 --server '
