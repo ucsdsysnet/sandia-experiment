@@ -49,12 +49,12 @@ class Experiment:
             #Run clients
             for index, workload in enumerate(workload_types):
                 client_switcher = {
-                    'iperf': lambda: impl.start_iperf_clients(self.experiment, workloads[0]["iperf"]),
+                    'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
                     'memcached': lambda: impl.start_memcached_clients(self.experiment, workloads[0]["memcached"])
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Experiment!")
                 func()
-            time.sleep(60)
+            # time.sleep(60)
     
     def get_repeat(self):
         return self.experiment['repeat']
