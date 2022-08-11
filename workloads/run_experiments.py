@@ -12,34 +12,44 @@ script_dir = os.path.dirname(__file__)
 class Experiment:
     def __init__(self, id, exp):
         self.id = id
+
+        #set name
+        self.name = ""
+        for workload_name in exp['workloads'][0].keys():
+            self.name = self.name + "-" + workload_name
+
         self.exp_time = (datetime.now().isoformat()
                             .replace(':','').replace('-','').split('.')[0])
         self.experiment = exp
+        self.all_logs = []
+        self.logs = {
+            # 'iperf_server': '/tmp/iperf-{}-{}.csv'.format("iperf", self.exp_time)
+        }
     
+    def append_logs(self, log_file):
+        self.all_logs.append(log_file)
+
     def run(self):
         with ExitStack() as stack:
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
-
             #Start servers
             for index, workload in enumerate(workload_types):
                 #Assumption - memached server instances needs to be up and populated before running experiments
                 server_switcher = {
-                    'iperf': lambda: impl.start_iperf_server(self.experiment, workloads[0]["iperf"])
+                    'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack)
                 }
                 func = server_switcher.get(workload, lambda: "Invalid Experiment!")
                 func()
             
             #Run clients
             for index, workload in enumerate(workload_types):
-                #Assumption - memached server instances needs to be up and populated before running experiments
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self.experiment, workloads[0]["iperf"]),
                     'memcached': lambda: impl.start_memcached_clients(self.experiment, workloads[0]["memcached"])
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Experiment!")
                 func()
-
             # time.sleep(10)
     
     def get_repeat(self):
