@@ -53,7 +53,7 @@ main()
             ./scripts/setup/setup-ip.sh -n fpga -h dst
         fi
     else
-        ./scripts/setup/install-dependencies.sh
+        # ./scripts/setup/install-dependencies.sh
         ./scripts/setup/setup-cx5.sh
         if [[ $CLUSTER_MODE -eq 1 ]]; then
             ./scripts/setup/setup-ip.sh -n cx5 -h dst --assign-multiple-ips

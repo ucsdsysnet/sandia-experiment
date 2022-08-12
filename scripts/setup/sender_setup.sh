@@ -70,7 +70,7 @@ main()
             ./scripts/setup/add_filters.sh -n fpga
         fi
     else
-        ./scripts/setup/install-dependencies.sh
+        # ./scripts/setup/install-dependencies.sh
         ./scripts/setup/setup-cx5.sh
         if [[ $CLUSTER_MODE -eq 1 ]]; then
             ./scripts/setup/setup-ip.sh -n cx5 -h src --assign-multiple-ips
