@@ -4,7 +4,6 @@ cwd="$(pwd)"
 cd "$(dirname "$0")"
 
 sudo apt-get update 
-sudo apt-get -y install zsh net-tools iperf3 numactl
 
 tempdir=$(mktemp -d)
 cd $tempdir
