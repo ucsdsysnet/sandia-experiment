@@ -28,7 +28,7 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
     stack.enter_context(start_server())
 
 @contextmanager
-def run_as_local(start_client_cmd):
+def run_as_local_with_context(start_client_cmd):
     pid = None
     try:
         os.system(start_client_cmd)
@@ -71,7 +71,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
     #If the client is the control machine run as a local command
     out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
     if out_str.find(exp_template['client_list'][0]) != -1:
-        stack.enter_context(run_as_local(start_client_cmd))
+        stack.enter_context(run_as_local_with_context(start_client_cmd))
     else:
         #Only when client is a remote machine
         start_client = RemoteCommand(
