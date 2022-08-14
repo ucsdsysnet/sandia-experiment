@@ -6,6 +6,7 @@ from collections import namedtuple, OrderedDict
 from contextlib import contextmanager, ExitStack
 import time
 import implementor as impl
+import util
 
 script_dir = os.path.dirname(__file__)
 
@@ -43,7 +44,7 @@ class Experiment:
                 server_switcher = {
                     'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack)
                 }
-                func = server_switcher.get(workload, lambda: "Invalid Experiment!")
+                func = server_switcher.get(workload, lambda: "Invalid Server!")
                 func()
             
             #Run clients
@@ -52,9 +53,18 @@ class Experiment:
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
                     'memcached': lambda: impl.start_memcached_clients(self.experiment, workloads[0]["memcached"])
                 }
-                func = client_switcher.get(workload, lambda: "Invalid Experiment!")
+                func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()
-            # time.sleep(60)
+            # time.sleep(1)
+            #Collect logs
+            for index, workload in enumerate(workload_types):
+                log_switcher = {
+                    'iperf': lambda: util.collect_iperf_logs(self, self.experiment, workloads[0]["iperf"]),
+                    'memcached': lambda: util.collect_memcached_logs(self, self.experiment, workloads[0]["memcached"])
+                }
+                func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
+                func()
+
     
     def get_repeat(self):
         return self.experiment['repeat']
