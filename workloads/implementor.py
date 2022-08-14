@@ -5,13 +5,14 @@ import os
 import logging
 
 def start_iperf_server(exp_obj, exp_template, workload, stack):
-    log_name = { 'iperf_server' : '/tmp/iperf-server-{}-r{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
+    log_name = { 'iperf_server' : '/tmp/iperf-server-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
     exp_obj.append_logs(log_name)
 
     start_server_cmd = ('iperf3 --server '
                             '--bind {} '
                             '--port {} '
                             '--one-off '
+                            '--json '
                             '--logfile {} ').format(
                                 exp_template['server_list'][0],
                                 c.IPERF_SERVER_PORT,
@@ -50,7 +51,7 @@ def run_as_local_with_context(start_client_cmd):
         # run_local_command('kill {}'.format(pid))
 
 def start_iperf_clients(exp_obj, exp_template, workload, stack):
-    log_name = { 'iperf_client' : '/tmp/iperf-client-{}-r{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
+    log_name = { 'iperf_client' : '/tmp/iperf-client-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
     exp_obj.append_logs(log_name)
 
     start_client_cmd = ('iperf3 --client {} '

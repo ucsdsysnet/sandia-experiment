@@ -1,9 +1,17 @@
 import os
 import subprocess
+import json 
+
+def log_experiment_details(exp_obj, exp_template):
+    # print(exp_template)
+    log_name = { 'experiment_details' : '/tmp/experiment-details-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
+    exp_obj.append_logs(log_name)
+    with open(log_name['experiment_details'], 'w') as f:
+        json.dump(exp_template, f)
 
 def collect_iperf_logs(exp_obj, exp_template, workload):
     print("collect_iperf_server_logs")
-    server_file_path = '/tmp/iperf-server-{}-r{}-{}.csv'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+    server_file_path = '/tmp/iperf-server-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
     cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} /tmp/'.format(
         exp_template['key_filename'],
         exp_template['username'],
