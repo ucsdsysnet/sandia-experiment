@@ -43,7 +43,7 @@ for i in $(seq 1 $parallelism); do
     if [[ $USE_SEPARATE_SERVER -eq 1 ]]; then
         echo >&2 "Using separate servers ..."
         IFS='.' read ip1 ip2 ip3 ip4 <<< "$server"
-        ip2=$(echo "1 + ($i - 1) / 32" | bc)
+        # ip2=$(echo "1 + ($i - 1) / 32" | bc)
         ip4=$(echo "$ip4 + ($i - 1) % 32 + 1" | bc)
         current_server="$ip1.$ip2.$ip3.$ip4"
         echo >&2 "\t$i-th server: $current_server"

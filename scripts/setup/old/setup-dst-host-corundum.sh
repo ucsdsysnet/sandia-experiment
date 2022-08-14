@@ -5,9 +5,10 @@ cd "$(dirname "$0")"
 TOTAL_IP_GROUPS=1
 
 source ../shared.sh
-IFACE=$(get_iface)
-IFACE_CX5=$(get_cx5_iface)
-[[ "$IFACE" == "$IFACE_CX5" ]] && ip_octet3=1 || ip_octet3=2
+IFACE=$(get_corundum_iface)
+ip_octet3_dst=20
+network_prefix='10.100'
+network_prefix_len=16
 
 for arg in "$@"
 do
@@ -26,9 +27,9 @@ ip addr show $IFACE | grep "inet " | awk '{print $2}' | xargs -I {} sudo ip addr
 
 # Destination host:
 [[ $ASSING_MULTIPLE_IPS -eq 1 ]] && MAX_IP=32 || MAX_IP=0
-for j in $(seq 1 $TOTAL_IP_GROUPS); do
-    ip_octet2=$j
+# for j in $(seq 1 $TOTAL_IP_GROUPS); do
+    # ip_octet2=$j
     for i in $(seq 0 $MAX_IP); do
-        sudo ip addr add 10.$ip_octet2.$ip_octet3.$((200 + $i))/8 dev $IFACE
+        sudo ip addr add $network_prefix.$ip_octet3_dst.$((100 + $i))/$network_prefix_len dev $IFACE
     done
-done
+# done
