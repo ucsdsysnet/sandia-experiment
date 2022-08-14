@@ -59,7 +59,7 @@ class Experiment:
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()
-            # time.sleep(1)
+            time.sleep(30)
             #Collect logs
             for index, workload in enumerate(workload_types):
                 log_switcher = {

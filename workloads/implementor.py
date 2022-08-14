@@ -32,7 +32,8 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
 def run_as_local_with_context(start_client_cmd):
     pid = None
     try:
-        os.system(start_client_cmd)
+        os.system(start_client_cmd + " &")
+        # run_local_command(start_client_cmd, True)
         pid = run_local_command('pgrep -f "{}"'.format(start_client_cmd))
         if (pid is None or pid == ""):
             print("Iperf client PID is None or empty:", pid)
