@@ -1,36 +1,36 @@
 # Setup
 
-#### Change cx5_IFACE and FPGA_IFACE properties with correct interface names in ip_interface.config file
+#### Change cx5_IFACE and FPGA_IFACE properties with correct interface names in sandia-experiment/scripts/setup/ip_interface.config file
 
-### Only for CX5 run this - (on both sender and receiver) 
+#### Only for CX5 run this - (on both sender and receiver) 
 ./scripts/setup/install-dependencies.sh
 
-### Setting up CX5 with filters and cluster mode - (on sender)
+#### Setting up CX5 with filters and cluster mode - (on sender)
 ./scripts/setup/sender_setup.sh -n cx5 --add_filters --cluster_mode
 
-### Setting up CX5 with cluster mode - (on receiver)
+#### Setting up CX5 with cluster mode - (on receiver)
 ./scripts/setup/receiver_setup.sh -n cx5 --cluster_mode
 
-### Setting up FPGA with filters and cluster mode - (on sender)
+#### Setting up FPGA with filters and cluster mode - (on sender)
 ./scripts/setup/sender_setup.sh -n fpga --add_filters --cluster_mode
 
-### Setting up FPGA with cluster mode - (on receiver)
+#### Setting up FPGA with cluster mode - (on receiver)
 ./scripts/setup/receiver_setup.sh -n fpga --cluster_mode
 
-### If you want to add dummy filters for FPGA for performance enhancement. This will add 2000 dummy rules. (On sender)
+#### If you want to add dummy filters for FPGA for performance enhancement. This will add 2000 dummy rules. (On sender)
 ./scripts/setup/dummy_filters.sh -n fpga
 
 # Run experiments
 
-### Describe your experiements in a json file (template.json) and run 
+### Describe your experiements in a json file (sandia-experiment/workloads/template.json) and run 
 python3 workloads/run_experiments.py template.json
 
 # Other (Only when you need individual scripts instead of going with the default cluster setup)
 
-### Regardless of the NIC type - Generic performance tuning (On both sender and receiver)
+#### Regardless of the NIC type - Generic performance tuning (On both sender and receiver)
 ./scripts/setup/setup-generic.sh
 
-### Change network settings (only for FPGA) on both sender and receiver
+#### Change network settings (only for FPGA) on both sender and receiver
 ./scripts/setup/network_settings.sh -n fpga
 
 ### Setting up IPs
@@ -57,7 +57,7 @@ Edit ip_interface.config with relevant  values
 
 ### Add dummy rules
 #### on sender
-#### Edit ip_interface.config with relevant  values
+#### Edit sandia-experiment/scripts/setup/ip_interface.config with relevant values
 ./scripts/setup/dummy_filters.sh -n fpga
 
 
