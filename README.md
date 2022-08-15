@@ -25,6 +25,11 @@
 ### Describe your experiements in a json file (sandia-experiment/workloads/template.json) and run 
 - python3 workloads/run_experiments.py template.json
 
+-There are three modes
+    - CLUSTER
+    - NORMAL
+    - IP
+
 - Cluster mode behaviour 
     - One to one mapping between clients and servers
     - Number of clients and servers will be based on "parallel" property. "clients" and "server_instances" properties are ignored.
@@ -35,7 +40,7 @@
     - Servers and clients are distinguied only by the ports and will have the same IP (first IP) specified in "server_list" and "client_list".
     - If there are more clients than server instances, clients will pick servers in a round robin manner
     - If there are more servers than clients then there will be idle servers
-    
+
 - Other requirements
     - Control node should have access to all clients and servers. 
     - Control node can behave as one of the clients. 

@@ -22,7 +22,7 @@
                     "iperf": {
                         "clients": 1,
                         "server_instances": 1,
-                        "cluster_mode": false,
+                        "mode": "CLUSTER", 
                         "parallel": 32
                     }
                 }

@@ -58,3 +58,12 @@ def collect_iperf_logs(exp_obj, exp_template, workload):
 
 def collect_memcached_logs(exp_obj, exp_template, workload):
     print("collect_memcached_logs")
+
+def get_log_name(name, instance, exp_id, iteration, exp_time):
+    log_id = get_log_id(name, instance)
+    log_name = { log_id : '/tmp/{}-i{}-{}-r{}-{}.json'.format(name, str(instance), exp_id, iteration, exp_time)}
+    return log_name
+
+def get_log_id(name, instance):
+    log_id = name+"-"+str(instance)
+    return log_id
