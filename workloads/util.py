@@ -2,6 +2,37 @@ import os
 import subprocess
 import json 
 
+###################~~~~SERVER COMMANDS~~~~##########################
+
+def get_iperf_server_cmd(server_ip, server_port, log_file_name):
+    start_server_cmd = ('iperf3 --server '
+                                    '--bind {} '
+                                    '--port {} '
+                                    '--one-off '
+                                    '--json '
+                                    '--logfile {} ').format(
+                                        server_ip,
+                                        server_port,
+                                        log_file_name)
+    return start_server_cmd
+
+def get_iperf_client_cmd(server_ip, server_port, client_ip, client_port, log_file_name):
+    start_client_cmd = ('iperf3 --client {} '
+                                    '--port {} '
+                                    '--bind {} '
+                                    '--cport {} '
+                                    '--zerocopy '
+                                    '--json '
+                                    '--logfile {} ').format(
+                                        server_ip,
+                                        server_port,
+                                        client_ip,
+                                        client_port,
+                                        log_file_name)
+    return start_client_cmd
+
+############################~~~LOG IMPLEMENTATION~~~######################
+
 def log_experiment_details(exp_obj, exp_template):
     # print(exp_template)
     log_name = { 'experiment_details' : '/tmp/experiment-details-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}

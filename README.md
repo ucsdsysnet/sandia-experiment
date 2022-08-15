@@ -27,13 +27,15 @@
 
 - Cluster mode behaviour 
     - One to one mapping between clients and servers
-    - Number of clients and servers will be based on "parallel" property
+    - Number of clients and servers will be based on "parallel" property. "clients" and "server_instances" properties are ignored.
     - Virtual IPs will be taken into account. Virtual IPs are calculated based on the first IP address provided in "server_list" and "client_list". This assumes that the NIC is configured with multiple IPs. 
+
 - Normal mode bahaviour
     - IP list is ignored. 
     - Servers and clients are distinguied only by the ports and will have the same IP (first IP) specified in "server_list" and "client_list".
     - If there are more clients than server instances, clients will pick servers in a round robin manner
     - If there are more servers than clients then there will be idle servers
+    
 - Other requirements
     - Control node should have access to all clients and servers. 
     - Control node can behave as one of the clients. 
