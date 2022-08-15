@@ -20,8 +20,8 @@
             "workloads": [
                 {
                     "iperf": {
-                        "clients": 1,
-                        "server_instances": 1,
+                        "clients": 10,
+                        "server_instances": 4,
                         "cluster_mode": false,
                         "parallel": 32
                     }
