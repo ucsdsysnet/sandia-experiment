@@ -25,7 +25,18 @@
 ### Describe your experiements in a json file (sandia-experiment/workloads/template.json) and run 
 - python3 workloads/run_experiments.py template.json
 
-# Other (Only when you need individual scripts instead of going with the default cluster setup)
+- Cluster mode behaviour 
+    - One to one mapping between clients and servers
+    - Number of clients and servers will be based on "parallel" property
+    - Virtual IPs will be taken into account. Virtual IPs are calculated based on the first IP address provided in "server_list" and "client_list". This assumes that the NIC is configured with multiple IPs. 
+- Normal mode bahaviour
+    - If the number of "server_list" and "client_list" matches with the properties "clients" and "server_instances" respectively then the IPs specified will be taken into account when starting up servers and clients.
+    - Otherwise servers and clients are distinguied only by the ports and will have the same IP (first IP) specified in "server_list" and "client_list".
+- Other requirements
+    - Control node should have access to all clients and servers. 
+    - Control node can behave as one of the clients. 
+
+### Other (Only when you need individual scripts instead of going with the default cluster setup)
 
 #### Regardless of the NIC type - Generic performance tuning (On both sender and receiver)
 - ./scripts/setup/setup-generic.sh

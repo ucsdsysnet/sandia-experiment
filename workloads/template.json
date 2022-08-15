@@ -1,63 +1,91 @@
 {
     "experiments": [
         {
-            "server_list" : ["10.10.20.100"],
-            "client_list" : ["10.10.10.100"],
-            "server_list_wan" : ["128.110.219.9"],
-            "client_list_wan" : ["128.110.218.248"],
-            "username" : "rukshani",
-            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.219.9"
+            ],
+            "client_list_wan": [
+                "128.110.218.248"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [
                 {
                     "iperf": {
                         "clients": 1,
-                        "server_instances" : 1,
-                        "cluster_mode": 0
+                        "server_instances": 1,
+                        "cluster_mode": false,
+                        "parallel": 32
                     }
                 }
             ]
         },
         {
-            "server_list" : ["10.10.20.100"],
-            "client_list" : ["10.10.10.100"],
-            "server_list_wan" : ["128.110.219.9"],
-            "client_list_wan" : ["128.110.218.248"],
-            "username" : "rukshani",
-            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.219.9"
+            ],
+            "client_list_wan": [
+                "128.110.218.248"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [
                 {
                     "memcached": {
                         "clients": 1,
-                        "server_instances" : 1,
-                        "cluster_mode": 0
+                        "server_instances": 1,
+                        "cluster_mode": false,
+                        "parallel": 32
                     }
                 }
             ]
         },
         {
-            "server_list" : ["10.10.20.100"],
-            "client_list" : ["10.10.10.100"],
-            "server_list_wan" : ["128.110.219.9"],
-            "client_list_wan" : ["128.110.218.248"],
-            "username" : "rukshani",
-            "key_filename" : "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.219.9"
+            ],
+            "client_list_wan": [
+                "128.110.218.248"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
             "workloads": [
                 {
                     "dummy_workload": {
                         "clients": 1,
-                        "server_instances" : 1,
-                        "cluster_mode": 0
+                        "server_instances": 1,
+                        "cluster_mode": false,
+                        "parallel": 32
                     },
                     "memcached": {
                         "clients": 1,
-                        "server_instances" : 1,
-                        "cluster_mode": 0
+                        "server_instances": 1,
+                        "cluster_mode": false,
+                        "parallel": 32
                     }
                 }
             ]
