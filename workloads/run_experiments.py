@@ -86,7 +86,7 @@ class Experiment:
             logging.warning('Found no logs for this experiment to compress')
         else:
             logging.info('Compressing {} logs into tarfile: {}'.format(len(logs_to_compress), self.tar_filename))
-            print(logs_to_compress)
+            # print(logs_to_compress)
             cmd = 'cd /tmp && tar -czf {} {} && rm -f {}'.format(
                 os.path.basename(self.tar_filename),
                 ' '.join(logs_to_compress),

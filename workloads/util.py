@@ -41,8 +41,6 @@ def log_experiment_details(exp_obj, exp_template):
         json.dump(exp_template, f)
 
 def collect_iperf_logs(exp_obj, exp_template, workload):
-    print("collect_iperf_server_logs")
-    # server_file_path = '/tmp/iperf-server-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
     all_server_files = '*{}-r{}-{}.json"'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
     
     cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} /tmp/'.format(
@@ -52,12 +50,11 @@ def collect_iperf_logs(exp_obj, exp_template, workload):
         os.path.join('"/tmp', all_server_files))
 
     print("collect server logs", cmd)
-    # print('Copying remotepath {} to localpath {}'.format(all_server_files, '/tmp'))
     subprocess.run(cmd, check=True, shell=True,
                     stdout = subprocess.DEVNULL,
                     stderr=subprocess.PIPE)
     #TODO: Copy client logs only if its on a remote location
-    print("collect_iperf_client_logs")
+    # print("collect_iperf_client_logs")
 
 def collect_memcached_logs(exp_obj, exp_template, workload):
     print("collect_memcached_logs")
@@ -70,3 +67,9 @@ def get_log_name(name, instance, exp_id, iteration, exp_time):
 def get_log_id(name, instance):
     log_id = name+"-"+str(instance)
     return log_id
+
+############################~~~STATISTICS~~~######################
+def log_queue_status(start_or_end, exp_obj, exp_template):
+    print("server queue stats")
+    print("client queue stats")
+    #ethtool -S ens3f0 | grep "tx[0-9]*_packets"
