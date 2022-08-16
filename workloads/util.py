@@ -80,27 +80,21 @@ def log_queue_status(period, exp_obj, exp_template):
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
-            df_start_tx = get_queue_stats(period, 'tx')
-            df_start_rx = get_queue_stats(period, 'rx')
-            different_tx_cols = df_start_tx.columns.difference(df_start_rx.columns)
-            print(different_tx_cols)
-            df_tx_cols = df_start_tx[different_tx_cols]
-            df_start_merged = pd.merge(df_start_rx, df_tx_cols, left_index=True,
-                        right_index=True, how='inner')
-            # print(df_start_merged)
+            df_start_merged = get_q_dataframe(period)
             df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
-            #TODO:Write to log
     else:
-        # print(exp_obj.all_logs[0][client_log_id])
-        #TODO: Get end stats
-        df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
-                  names=["q_number", "start_rx", "start_tx"])
-        print(df_start)
-
+        if exp_template['nic_type'] == c.CX5:
+            df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
+                    names=["q_number", "start_rx", "start_tx"])
+            df_end = get_q_dataframe(period)
+            different_start_cols = df_start.columns.difference(df_end.columns)
+            df_start_cols = df_start[different_start_cols]
+            df_all_merged = pd.merge(df_end, df_start_cols, left_index=True, right_index=True, how='inner')
+            df_all_merged.to_csv(exp_obj.all_logs[0][client_log_id], header=True, index=True)
+            
 def get_queue_stats(period, tx_or_rx):
     #TODO: Get Iface based on IP
     #TODO: remote command when client is remote
-    # df = pd.DataFrame(columns=['q_number', 'start_tx', 'start_rx', 'end_tx', 'end_rx'])
     df = pd.DataFrame()
     out_str = run_local_command('ethtool -S ens3f0 | grep "{}[0-9]*_packets"'.format(tx_or_rx), True)
     queues = out_str.split("\n")
@@ -111,7 +105,7 @@ def get_queue_stats(period, tx_or_rx):
         q_number = extract_queue_number(desc_packets[0].strip())
         if q_number != 'all':
             q_numbers.append(q_number)
-            packets_per_queue = desc_packets[1].strip()
+            packets_per_queue.append(desc_packets[1].strip())
     df['q_number'] = q_numbers
     header = period + "_" + tx_or_rx
     df[header] = packets_per_queue
@@ -124,3 +118,11 @@ def extract_queue_number(queue_details):
         return 'all'
     else:
         return q_number
+
+def get_q_dataframe(period):
+    df_tx = get_queue_stats(period, 'tx')
+    df_rx = get_queue_stats(period, 'rx')
+    different_tx_cols = df_tx.columns.difference(df_rx.columns)
+    df_tx_cols = df_tx[different_tx_cols]
+    df_merged = pd.merge(df_rx, df_tx_cols, left_index=True, right_index=True, how='inner')
+    return df_merged
