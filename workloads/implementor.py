@@ -14,7 +14,7 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
         for x in range(1, parallel_processes+1):
             # print("x:", x)
             log_id = util.get_log_id(c.IPERF_SERVER_LOG_ID, x)
-            log_name = util.get_log_name(c.IPERF_SERVER_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+            log_name = util.get_log_name(c.IPERF_SERVER_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
             exp_obj.append_logs(log_name)
 
             server_base_ip = exp_template['server_list'][0]
@@ -39,7 +39,7 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
         server_port = c.IPERF_SERVER_PORT
         for x in range(server_instances):
             log_id = util.get_log_id(c.IPERF_SERVER_LOG_ID, x)
-            log_name = util.get_log_name(c.IPERF_SERVER_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+            log_name = util.get_log_name(c.IPERF_SERVER_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
             exp_obj.append_logs(log_name)
 
             start_server_cmd = util.get_iperf_server_cmd(exp_template['server_list'][0], server_port, log_name[log_id])
@@ -88,7 +88,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
 
         for x in range(1, parallel_processes+1):
             log_id = util.get_log_id(c.IPERF_CLIENT_LOG_ID, x)
-            log_name = util.get_log_name(c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+            log_name = util.get_log_name(c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
             exp_obj.append_logs(log_name)
 
             server_base_ip = exp_template['server_list'][0]
@@ -140,7 +140,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
 
         for x in range(client_instances):
             log_id = util.get_log_id(c.IPERF_CLIENT_LOG_ID, x)
-            log_name = util.get_log_name(c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+            log_name = util.get_log_name(c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
             exp_obj.append_logs(log_name)
 
             server_port_index = x % len_server_instances

@@ -40,6 +40,9 @@ class Experiment:
     def run(self, iteration):
         self.iteration = iteration
         with ExitStack() as stack:
+
+            util.log_queue_status("start", self, self.experiment)
+
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
             #Start servers
