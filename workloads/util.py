@@ -80,12 +80,19 @@ def log_queue_status(period, exp_obj, exp_template):
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
-            write_queue_stats(period, 'tx')
-            write_queue_stats(period, 'rx')
+            df_tx = write_queue_stats(period, 'tx')
+            df_rx = write_queue_stats(period, 'rx')
+            different_cols = df_tx.columns.difference(df_rx.columns)
+            print(different_cols)
+            data3 = df_tx[different_cols]
+            # print(data3)
+            df_merged = pd.merge(df_rx, data3, left_index=True,
+                     right_index=True, how='inner')
+            print(df_merged)
     else:
         if exp_template['nic_type'] == c.CX5:
             write_queue_stats(period, 'rx')
-            # write_queue_stats(period, 'rx')
+            write_queue_stats(period, 'rx')
 
 def write_queue_stats(period, tx_or_rx):
     #TODO: Get Iface based on IP
@@ -96,14 +103,17 @@ def write_queue_stats(period, tx_or_rx):
     out_str = run_local_command('ethtool -S ens3f0 | grep "{}[0-9]*_packets"'.format(tx_or_rx), True)
     queues = out_str.split("\n")
     q_numbers = []
+    packets_per_queue = []
     for queue in queues:
-        packets_per_queue = queue.split(':')
-        q_number = extract_queue_number(packets_per_queue[0].strip())
+        desc_packets = queue.split(':')
+        q_number = extract_queue_number(desc_packets[0].strip())
         if q_number != 'all':
             q_numbers.append(q_number)
+            packets_per_queue = desc_packets[1].strip()
     df['q_number'] = q_numbers
-    df['tx_or_rx'] = tx_or_rx
-    print(df)
+    header = period + "_" + tx_or_rx
+    df[header] = packets_per_queue
+    return df
 
 def extract_queue_number(queue_details):
     # print(re.findall(r'\b\d+\b', queue_details))
