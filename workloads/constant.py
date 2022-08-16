@@ -8,10 +8,12 @@ CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
 IP_MODE = "IP"
 
-CLIENT_QUEUE_STATS = "client-per-queue"
-SERVER_QUEUE_STATS = "server-per-queue"
+CLIENT_QUEUE_STATS = "client-nic-queue"
+SERVER_QUEUE_STATS = "server-nic-queue"
 
 JSON = "json"
 CSV = "csv"
 
 CX5 = "cx5"
+
+DATAPATH_PROCESSED = "/tmp/data-processed/"

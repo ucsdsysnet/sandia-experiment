@@ -80,24 +80,23 @@ def log_queue_status(period, exp_obj, exp_template):
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
-            df_tx = write_queue_stats(period, 'tx')
-            df_rx = write_queue_stats(period, 'rx')
-            different_cols = df_tx.columns.difference(df_rx.columns)
-            print(different_cols)
-            data3 = df_tx[different_cols]
-            # print(data3)
-            df_merged = pd.merge(df_rx, data3, left_index=True,
-                     right_index=True, how='inner')
-            print(df_merged)
+            df_start_tx = get_queue_stats(period, 'tx')
+            df_start_rx = get_queue_stats(period, 'rx')
+            different_tx_cols = df_start_tx.columns.difference(df_start_rx.columns)
+            print(different_tx_cols)
+            df_tx_cols = df_start_tx[different_tx_cols]
+            df_start_merged = pd.merge(df_start_rx, df_tx_cols, left_index=True,
+                        right_index=True, how='inner')
+            print(df_start_merged)
+            df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
+            #TODO:Write to log
     else:
-        if exp_template['nic_type'] == c.CX5:
-            write_queue_stats(period, 'rx')
-            write_queue_stats(period, 'rx')
+        #TODO: Get end stats
+        print('hello')
 
-def write_queue_stats(period, tx_or_rx):
+def get_queue_stats(period, tx_or_rx):
     #TODO: Get Iface based on IP
     #TODO: remote command when client is remote
-
     # df = pd.DataFrame(columns=['q_number', 'start_tx', 'start_rx', 'end_tx', 'end_rx'])
     df = pd.DataFrame()
     out_str = run_local_command('ethtool -S ens3f0 | grep "{}[0-9]*_packets"'.format(tx_or_rx), True)
