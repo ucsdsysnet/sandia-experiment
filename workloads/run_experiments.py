@@ -72,6 +72,7 @@ class Experiment:
                 func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
                 func()
         util.log_experiment_details(self, self.experiment)
+        util.log_queue_status("end", self, self.experiment)
         self.compress_logs()
 
     def compress_logs(self):

@@ -87,12 +87,15 @@ def log_queue_status(period, exp_obj, exp_template):
             df_tx_cols = df_start_tx[different_tx_cols]
             df_start_merged = pd.merge(df_start_rx, df_tx_cols, left_index=True,
                         right_index=True, how='inner')
-            print(df_start_merged)
+            # print(df_start_merged)
             df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
             #TODO:Write to log
     else:
+        # print(exp_obj.all_logs[0][client_log_id])
         #TODO: Get end stats
-        print('hello')
+        df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
+                  names=["q_number", "start_rx", "start_tx"])
+        print(df_start)
 
 def get_queue_stats(period, tx_or_rx):
     #TODO: Get Iface based on IP
