@@ -17,6 +17,7 @@
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
+            "nic_type": "cx5",
             "workloads": [
                 {
                     "iperf": {
@@ -45,6 +46,7 @@
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
+            "nic_type": "cx5",
             "workloads": [
                 {
                     "memcached": {
@@ -73,6 +75,7 @@
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
+            "nic_type": "cx5",
             "workloads": [
                 {
                     "dummy_workload": {

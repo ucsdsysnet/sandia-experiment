@@ -40,6 +40,9 @@ class Experiment:
     def run(self, iteration):
         self.iteration = iteration
         with ExitStack() as stack:
+
+            util.log_queue_status("start", self, self.experiment)
+
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
             #Start servers
@@ -69,6 +72,7 @@ class Experiment:
                 func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
                 func()
         util.log_experiment_details(self, self.experiment)
+        util.log_queue_status("end", self, self.experiment)
         self.compress_logs()
 
     def compress_logs(self):
@@ -86,7 +90,7 @@ class Experiment:
             logging.warning('Found no logs for this experiment to compress')
         else:
             logging.info('Compressing {} logs into tarfile: {}'.format(len(logs_to_compress), self.tar_filename))
-            print(logs_to_compress)
+            # print(logs_to_compress)
             cmd = 'cd /tmp && tar -czf {} {} && rm -f {}'.format(
                 os.path.basename(self.tar_filename),
                 ' '.join(logs_to_compress),

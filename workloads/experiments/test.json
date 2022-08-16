@@ -17,12 +17,13 @@
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
             "repeat": 1,
+            "nic_type": "cx5",
             "workloads": [
                 {
                     "iperf": {
                         "clients": 1,
                         "server_instances": 1,
-                        "mode": "CLUSTER", 
+                        "mode": "NORMAL", 
                         "parallel": 32
                     }
                 }

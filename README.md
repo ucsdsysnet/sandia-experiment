@@ -25,7 +25,7 @@
 ### Describe your experiements in a json file (sandia-experiment/workloads/template.json) and run 
 - python3 workloads/run_experiments.py template.json
 
--There are three modes
+- There are three modes
     - CLUSTER
     - NORMAL
     - IP
