@@ -36,7 +36,7 @@
 
 ### Memcached server -> view stats
 ```
-telnet 10.10.20.101 11212
+telnet 10.10.20.100 11212
 stats items
 stats detail
 stats sizes
