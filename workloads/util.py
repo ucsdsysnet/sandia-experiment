@@ -91,6 +91,7 @@ def get_log_id(name, instance):
 
 ############################~~~STATISTICS~~~######################
 def log_queue_status(period, exp_obj, exp_template):
+    print("iteration:", period, exp_obj.iteration)
     client_log_id = get_log_id(c.CLIENT_QUEUE_STATS, 0)
     if period == "start":
         client_log_name = get_log_name(c.CLIENT_QUEUE_STATS, 0, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.CSV)
@@ -101,6 +102,7 @@ def log_queue_status(period, exp_obj, exp_template):
             df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
     else:
         if exp_template['nic_type'] == c.CX5:
+            print(exp_obj.all_logs)
             df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
                     names=["q_number", "start_rx", "start_tx"])
             df_end = get_q_dataframe(period)
