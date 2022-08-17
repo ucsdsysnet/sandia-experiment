@@ -28,6 +28,21 @@ def run_as_local_with_context(start_client_cmd):
         # logging.info('Cleaning up cmd: {}'.format(start_client_cmd))
         # run_local_command('kill {}'.format(pid))
 
+def run_client_command(exp_template, start_client_cmd, log_id, log_name, stack):
+    #If the client is the control machine run as a local command
+    out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
+    if out_str.find(exp_template['client_list'][0]) != -1:
+        stack.enter_context(run_as_local_with_context(start_client_cmd))
+    else:
+        #Only when client is a remote machine
+        start_client = RemoteCommand(
+                start_client_cmd,
+                exp_template['client_list_wan'][0],
+                username=exp_template['username'],
+                logs=[log_name[log_id]],
+                key_filename=exp_template['key_filename'])
+        stack.enter_context(start_client())
+
 ###################~~~~IPERF~~~~##########################
 
 def start_iperf_server(exp_obj, exp_template, workload, stack):
@@ -110,20 +125,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
             server_port = server_port + 1
             client_port = client_port + 1
             print("iperf client cmd>", start_client_cmd)
-
-            #If the client is the control machine run as a local command
-            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
-            if out_str.find(exp_template['client_list'][0]) != -1:
-                stack.enter_context(run_as_local_with_context(start_client_cmd))
-            else:
-                #Only when client is a remote machine
-                start_client = RemoteCommand(
-                        start_client_cmd,
-                        exp_template['client_list_wan'][0],
-                        username=exp_template['username'],
-                        logs=[log_name[log_id]],
-                        key_filename=exp_template['key_filename'])
-                stack.enter_context(start_client())
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
 
     else:
         client_instances = workload['clients']
@@ -151,22 +153,8 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
                                                         log_name[log_id])
 
             print("iperf client cmd>", start_client_cmd)
-
             client_port = client_port + 1
-
-            #If the client is the control machine run as a local command
-            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
-            if out_str.find(exp_template['client_list'][0]) != -1:
-                stack.enter_context(run_as_local_with_context(start_client_cmd))
-            else:
-                #Only when client is a remote machine
-                start_client = RemoteCommand(
-                        start_client_cmd,
-                        exp_template['client_list_wan'][0],
-                        username=exp_template['username'],
-                        logs=[log_name[log_id]],
-                        key_filename=exp_template['key_filename'])
-                stack.enter_context(start_client())
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
 
 ###################~~~~MEMCACHED~~~~##########################
 
@@ -192,19 +180,7 @@ def start_memcached_clients(exp_obj, exp_template, workload, stack):
                                                         server_port, 
                                                         log_name[log_id])
             print(start_client_cmd)
-            #If the client is the control machine run as a local command
-            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
-            if out_str.find(exp_template['client_list'][0]) != -1:
-                stack.enter_context(run_as_local_with_context(start_client_cmd))
-            else:
-                #Only when client is a remote machine
-                start_client = RemoteCommand(
-                        start_client_cmd,
-                        exp_template['client_list_wan'][0],
-                        username=exp_template['username'],
-                        logs=[log_name[log_id]],
-                        key_filename=exp_template['key_filename'])
-                stack.enter_context(start_client())
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
     else:
         client_instances = workload['clients']
         len_server_instances = workload['server_instances']
@@ -226,16 +202,4 @@ def start_memcached_clients(exp_obj, exp_template, workload, stack):
                                                         server_ports[server_port_index], 
                                                         log_name[log_id])
             print(start_client_cmd)
-            #If the client is the control machine run as a local command
-            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
-            if out_str.find(exp_template['client_list'][0]) != -1:
-                stack.enter_context(run_as_local_with_context(start_client_cmd))
-            else:
-                #Only when client is a remote machine
-                start_client = RemoteCommand(
-                        start_client_cmd,
-                        exp_template['client_list_wan'][0],
-                        username=exp_template['username'],
-                        logs=[log_name[log_id]],
-                        key_filename=exp_template['key_filename'])
-                stack.enter_context(start_client())
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
