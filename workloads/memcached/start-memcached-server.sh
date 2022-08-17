@@ -32,7 +32,12 @@ done
 
 server_port_pair=''
 if [[ $USE_SEPARATE_SERVER != 1 ]]; then
-    server_port_pair="$server:11211"
+    for i in $(seq 1 $parallelism);
+        do
+            port=$(echo "11211+$i" | bc)
+            # server_port_pair="$server:11211"
+            server_port_pair+="$server:$port,"
+        done 
 fi
 
 if [[ $USE_SEPARATE_SERVER -eq 1 ]]; then

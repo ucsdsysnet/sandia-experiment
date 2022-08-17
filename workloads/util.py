@@ -6,7 +6,7 @@ import constant as c
 import re
 import pandas as pd 
 
-###################~~~~SERVER COMMANDS~~~~##########################
+###################~~~~WORKLOAD COMMANDS~~~~##########################
 
 def get_iperf_server_cmd(server_ip, server_port, log_file_name):
     start_server_cmd = ('iperf3 --server '
@@ -35,6 +35,23 @@ def get_iperf_client_cmd(server_ip, server_port, client_ip, client_port, log_fil
                                         log_file_name)
     return start_client_cmd
 
+def get_memcached_client_cmd(server_ip, server_port, log_file_name):
+    start_client_cmd = ('memtier_benchmark -s {} '
+                                    '-p {} '
+                                    '-P memcache_text '
+                                    '--ratio=0:1 '
+                                    '-t {} '
+                                    '-c {} '
+                                    '-n {} '
+                                    '--json-out-file {} ').format(
+                                    server_ip,
+                                    server_port, 
+                                    c.MEMCACHED_THREAD_COUNT, 
+                                    c.MEMCACHED_CONNECTION_COUNT,
+                                    c.MEMCACHED_REQUEST_COUNT, 
+                                    log_file_name)
+    return start_client_cmd
+    
 ############################~~~LOG IMPLEMENTATION~~~######################
 
 def log_experiment_details(exp_obj, exp_template):
@@ -96,7 +113,7 @@ def get_queue_stats(period, tx_or_rx):
     #TODO: Get Iface based on IP
     #TODO: remote command when client is remote
     df = pd.DataFrame()
-    out_str = run_local_command('ethtool -S ens3f0 | grep "{}[0-9]*_packets"'.format(tx_or_rx), True)
+    out_str = run_local_command('ethtool -S {} | grep "{}[0-9]*_packets"'.format(c.CX5_IFNAME, tx_or_rx), True)
     queues = out_str.split("\n")
     q_numbers = []
     packets_per_queue = []
