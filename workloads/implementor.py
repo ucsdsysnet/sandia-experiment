@@ -174,6 +174,37 @@ def start_memcached_clients(exp_obj, exp_template, workload, stack):
     print("start memcached clients: ")
     if (workload['mode'] == c.CLUSTER_MODE):
         print("cluster")
+        parallel_processes = workload['parallel']
+        server_port = c.MEMCACHED_SERVER_PORT
+        for x in range(1, parallel_processes+1):
+            log_id = util.get_log_id(c.MEMCACHED_CLIENT_LOG_ID, x)
+            log_name = util.get_log_name(c.MEMCACHED_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
+            exp_obj.append_logs(log_name)
+
+            server_port = server_port + 1
+
+            server_base_ip = exp_template['server_list'][0]
+            octets = server_base_ip.split('.')
+            last_octet = int(octets[3]) + x
+            server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
+
+            start_client_cmd = util.get_memcached_client_cmd(server_ip, 
+                                                        server_port, 
+                                                        log_name[log_id])
+            print(start_client_cmd)
+            #If the client is the control machine run as a local command
+            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
+            if out_str.find(exp_template['client_list'][0]) != -1:
+                stack.enter_context(run_as_local_with_context(start_client_cmd))
+            else:
+                #Only when client is a remote machine
+                start_client = RemoteCommand(
+                        start_client_cmd,
+                        exp_template['client_list_wan'][0],
+                        username=exp_template['username'],
+                        logs=[log_name[log_id]],
+                        key_filename=exp_template['key_filename'])
+                stack.enter_context(start_client())
     else:
         client_instances = workload['clients']
         len_server_instances = workload['server_instances']

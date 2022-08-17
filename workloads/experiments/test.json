@@ -23,8 +23,8 @@
                     "memcached": {
                         "clients": 3,
                         "server_instances": 3,
-                        "mode": "NORMAL", 
-                        "parallel": 32
+                        "mode": "CLUSTER", 
+                        "parallel": 3
                     }
                 }
             ]
