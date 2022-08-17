@@ -21,8 +21,8 @@
             "workloads": [
                 {
                     "memcached": {
-                        "clients": 1,
-                        "server_instances": 2,
+                        "clients": 3,
+                        "server_instances": 3,
                         "mode": "NORMAL", 
                         "parallel": 32
                     }

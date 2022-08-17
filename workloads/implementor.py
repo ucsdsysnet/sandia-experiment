@@ -170,7 +170,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
 
 ###################~~~~MEMCACHED~~~~##########################
 
-def start_memcached_clients(experiment, workload):
+def start_memcached_clients(exp_obj, exp_template, workload, stack):
     print("start memcached clients: ")
     if (workload['mode'] == c.CLUSTER_MODE):
         print("cluster")
@@ -188,4 +188,23 @@ def start_memcached_clients(experiment, workload):
             log_id = util.get_log_id(c.MEMCACHED_CLIENT_LOG_ID, x)
             log_name = util.get_log_name(c.MEMCACHED_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
             exp_obj.append_logs(log_name)
-        
+
+            server_port_index = x % len_server_instances
+
+            start_client_cmd = util.get_memcached_client_cmd(exp_template['server_list'][0], 
+                                                        server_ports[server_port_index], 
+                                                        log_name[log_id])
+            print(start_client_cmd)
+            #If the client is the control machine run as a local command
+            out_str = run_local_command('ifconfig | grep -w {}'.format(exp_template['client_list'][0]), True)
+            if out_str.find(exp_template['client_list'][0]) != -1:
+                stack.enter_context(run_as_local_with_context(start_client_cmd))
+            else:
+                #Only when client is a remote machine
+                start_client = RemoteCommand(
+                        start_client_cmd,
+                        exp_template['client_list_wan'][0],
+                        username=exp_template['username'],
+                        logs=[log_name[log_id]],
+                        key_filename=exp_template['key_filename'])
+                stack.enter_context(start_client())

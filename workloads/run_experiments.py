@@ -58,7 +58,7 @@ class Experiment:
             for index, workload in enumerate(workload_types):
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
-                    'memcached': lambda: impl.start_memcached_clients(self.experiment, workloads[0]["memcached"])
+                    'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack)
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()

@@ -38,7 +38,7 @@ done
 if [[ $USE_SEPARATE_SERVER != 1 ]]; then
     logname="memt-log.json"
     echo "hello"
-    memtier_benchmark -s $server -p 11211 -P memcache_text --ratio=0:1 -t 1 -c 30 -n 10000 --json-out-file=$logname &
+    memtier_benchmark -s $server -p 11212 -P memcache_text --ratio=0:1 -t 1 -c 30 -n 10000 --json-out-file=$logname &
 fi
 
 if [[ $USE_SEPARATE_SERVER -eq 1 ]]; then
