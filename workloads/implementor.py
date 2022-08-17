@@ -5,6 +5,31 @@ import os
 import logging
 import util
 
+@contextmanager
+def run_as_local_with_context(start_client_cmd):
+    pid = None
+    try:
+        os.system(start_client_cmd + " &")
+        # run_local_command(start_client_cmd, True)
+        pid = run_local_command('pgrep -f "{}"'.format(start_client_cmd))
+        if (pid is None or pid == ""):
+            print("Iperf client PID is None or empty:", pid)
+        else:
+            print("Iperf client PID is: ", pid)
+            # assert(pid)
+            # pid = int(pid)
+            # logging.info('PID={}'.format(pid))
+            # yield pid
+        yield
+    except Exception as ex:
+        print(False)
+    # finally:
+        # print("finally---")
+        # logging.info('Cleaning up cmd: {}'.format(start_client_cmd))
+        # run_local_command('kill {}'.format(pid))
+
+###################~~~~IPERF~~~~##########################
+
 def start_iperf_server(exp_obj, exp_template, workload, stack):
     print("mode:", workload['mode'])
     if (workload['mode'] == c.CLUSTER_MODE):
@@ -55,33 +80,9 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
 
             stack.enter_context(start_server())
 
-@contextmanager
-def run_as_local_with_context(start_client_cmd):
-    pid = None
-    try:
-        os.system(start_client_cmd + " &")
-        # run_local_command(start_client_cmd, True)
-        pid = run_local_command('pgrep -f "{}"'.format(start_client_cmd))
-        if (pid is None or pid == ""):
-            print("Iperf client PID is None or empty:", pid)
-        else:
-            print("Iperf client PID is: ", pid)
-            # assert(pid)
-            # pid = int(pid)
-            # logging.info('PID={}'.format(pid))
-            # yield pid
-        yield
-    except Exception as ex:
-        print(False)
-    # finally:
-        # print("finally---")
-        # logging.info('Cleaning up cmd: {}'.format(start_client_cmd))
-        # run_local_command('kill {}'.format(pid))
-
 def start_iperf_clients(exp_obj, exp_template, workload, stack):
     print("mode:", workload['mode'])
     if (workload['mode'] == c.CLUSTER_MODE):
-        print("cluster mode client")
         parallel_processes = workload['parallel']
         client_port = c.IPERF_CLIENT_PORT
         server_port = c.IPERF_SERVER_PORT
@@ -126,7 +127,6 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
 
     else:
         client_instances = workload['clients']
-        print("client instances:", client_instances)
         len_server_instances = workload['server_instances']
         client_port = c.IPERF_CLIENT_PORT
         server_port = c.IPERF_SERVER_PORT
@@ -168,6 +168,24 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
                         key_filename=exp_template['key_filename'])
                 stack.enter_context(start_client())
 
+###################~~~~MEMCACHED~~~~##########################
+
 def start_memcached_clients(experiment, workload):
     print("start memcached clients: ")
-
+    if (workload['mode'] == c.CLUSTER_MODE):
+        print("cluster")
+    else:
+        client_instances = workload['clients']
+        len_server_instances = workload['server_instances']
+        server_port = c.MEMCACHED_SERVER_PORT
+        server_ports = []
+        # Multiple server instances assumes multiple IPs and ports
+        for i in range(len_server_instances):
+            server_port = server_port + 1
+            server_ports.append(server_port)
+        print(server_ports)
+        for x in range(client_instances):
+            log_id = util.get_log_id(c.MEMCACHED_CLIENT_LOG_ID, x)
+            log_name = util.get_log_name(c.MEMCACHED_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.JSON)
+            exp_obj.append_logs(log_name)
+        

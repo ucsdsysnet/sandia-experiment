@@ -1,8 +1,13 @@
 IPERF_SERVER_PORT = 5100
 IPERF_CLIENT_PORT = 5100
 
+# Ports will start at 11211+1 = 11212
+MEMCACHED_SERVER_PORT = 11211 
+
 IPERF_SERVER_LOG_ID = "iperf-server"
 IPERF_CLIENT_LOG_ID = "iperf-client"
+
+MEMCACHED_CLIENT_LOG_ID = "memcached-client"
 
 CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
@@ -15,5 +20,6 @@ JSON = "json"
 CSV = "csv"
 
 CX5 = "cx5"
+CX5_IFNAME = "ens3f0"
 
 DATAPATH_PROCESSED = "/tmp/data-processed/"

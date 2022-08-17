@@ -20,9 +20,9 @@
             "nic_type": "cx5",
             "workloads": [
                 {
-                    "iperf": {
+                    "memcached": {
                         "clients": 1,
-                        "server_instances": 1,
+                        "server_instances": 2,
                         "mode": "NORMAL", 
                         "parallel": 32
                     }
