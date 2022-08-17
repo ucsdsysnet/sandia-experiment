@@ -9,13 +9,19 @@
 ```
 
 ##### Start memcached server (On server)
+
+- Normal Mode (Same IP but different ports)
+```
+./workloads/memcached/start-memcached-server.sh -s 10.10.20.100 -p 32
+```
+- Cluster Mode (Different IPs along with different ports)
 ```
 ./workloads/memcached/start-memcached-server.sh -s 10.10.20.100 -p 32 --separate-servers
 ```
 
 ##### Populate memcached server with data (On client)
 ```
-./workloads/memcached/populate-memcached-with-data.sh -s 10.10.20.101 -p 11212
+./workloads/memcached/populate-memcached-with-data.sh -s 10.10.20.100 -p 11212
 ```
 
 #### Run memtier benachmark tool (On client)
