@@ -45,6 +45,9 @@
     - Control node should have access to all clients and servers. 
     - Control node can behave as one of the clients. 
 
+### Workloads
+- NOTE: Memcached experiments assume that the memcached server is up and populated with data. Instrcutions on setting up memcached can be find in sandia-experiment/workloads/memcached/instrcutions.md file. 
+
 ### Other (Only when you need individual scripts instead of going with the default cluster setup)
 
 #### Regardless of the NIC type - Generic performance tuning (On both sender and receiver)
