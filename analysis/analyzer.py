@@ -10,10 +10,11 @@ import json
 import pandas as pd 
 
 class ExperimentAnalyzer:
-    def __init__(self, tar_path, exp_identifier):
+    def __init__(self, tar_path, exp_identifier, process_path):
         self.tar_path = tar_path
+        self.process_path = process_path
         self.exp_id = exp_identifier
-        self.data_process_path = c.DATAPATH_PROCESSED + self.exp_id
+        self.exp_process_path = process_path + "/" + self.exp_id
 
         self._experiment_log = None
         self._nic_queue_logs = None
@@ -30,12 +31,12 @@ class ExperimentAnalyzer:
         self.obj_memcached = []
 
         tar = tarfile.open(self.tar_path, "r:gz")
-        tar.extractall(self.data_process_path)
+        tar.extractall(self.exp_process_path)
         tar.close()
 
     @property
     def experiment_log(self):
-        exp_log_filter = self.data_process_path + "/" + c.EXPERIMENT_DETAILS_LOG_ID + "*"
+        exp_log_filter = self.exp_process_path + "/" + c.EXPERIMENT_DETAILS_LOG_ID + "*"
         exp_log_list = glob.glob(exp_log_filter)
         with open(exp_log_list[0]) as f:
             exp_json = json.load(f)
@@ -43,12 +44,12 @@ class ExperimentAnalyzer:
 
     @property
     def nic_queue_logs(self):
-        client_q_log_filter = self.data_process_path + "/" + c.CLIENT_QUEUE_STATS + "*"
+        client_q_log_filter = self.exp_process_path + "/" + c.CLIENT_QUEUE_STATS + "*"
         client_q_log_list = glob.glob(client_q_log_filter)
         df_c_q = pd.read_csv(client_q_log_list[0] ,sep=',',)
         self.df_nic_client_queue_stats = df_c_q
         
-        server_q_log_filter = self.data_process_path + "/" + c.SERVER_QUEUE_STATS + "*"
+        server_q_log_filter = self.exp_process_path + "/" + c.SERVER_QUEUE_STATS + "*"
         server_q_log_list = glob.glob(server_q_log_filter)
         if server_q_log_list:
             df_s_q = pd.read_csv(server_q_log_list[0] ,sep=',',)
@@ -59,7 +60,7 @@ class ExperimentAnalyzer:
 
     @property
     def iperf_client_logs(self):
-        client_log_filter = self.data_process_path + "/" + c.IPERF_CLIENT_LOG_ID + "*"
+        client_log_filter = self.exp_process_path + "/" + c.IPERF_CLIENT_LOG_ID + "*"
         iperf_client_log_list = glob.glob(client_log_filter)
         for client_log in iperf_client_log_list:
             with open(client_log) as f:
@@ -69,7 +70,7 @@ class ExperimentAnalyzer:
 
     @property
     def iperf_server_logs(self):
-        server_log_filter = self.data_process_path + "/" + c.IPERF_SERVER_LOG_ID + "*"
+        server_log_filter = self.exp_process_path + "/" + c.IPERF_SERVER_LOG_ID + "*"
         iperf_server_log_list = glob.glob(server_log_filter)
         for server_log in iperf_server_log_list:
             with open(server_log) as f:
@@ -78,7 +79,7 @@ class ExperimentAnalyzer:
 
     @property
     def memcached_logs(self):
-        memc_log_filter = self.data_process_path + "/" + c.MEMCACHED_CLIENT_LOG_ID + "*"
+        memc_log_filter = self.exp_process_path + "/" + c.MEMCACHED_CLIENT_LOG_ID + "*"
         memc_log_list = glob.glob(memc_log_filter)
         for memc_log in memc_log_list:
             with open(memc_log) as f:
@@ -86,7 +87,7 @@ class ExperimentAnalyzer:
                 self.obj_memcached.append(memc_json)
         # print(self.obj_memcached)
     
-def load_experiments(experiment_name_patterns, tar_path):
+def load_experiments(experiment_name_patterns, tar_path, process_path):
     num_local_files = 0
     for experiment_name_pattern in experiment_name_patterns:
         local_filepaths = glob.glob(os.path.join(tar_path, experiment_name_pattern +'.tar.gz'))
@@ -94,12 +95,12 @@ def load_experiments(experiment_name_patterns, tar_path):
     experiment_analyzers = OrderedDict()
     for tarfile_localpath in local_filepaths:
         exp_identifier = tarfile_localpath.split('/')[3][:-7]
-        experiment_analyzer = ExperimentAnalyzer(tarfile_localpath, exp_identifier)
+        experiment_analyzer = ExperimentAnalyzer(tarfile_localpath, exp_identifier, process_path)
         experiment_analyzers[exp_identifier] = experiment_analyzer
     return experiment_analyzers
 
-def get_experiment_analysers(file_pattern, tar_path):
-    experiment_analyzers = load_experiments(['*'+file_pattern+'*'], tar_path)
+def get_experiment_analysers(file_pattern, tar_path, process_path):
+    experiment_analyzers = load_experiments(['*'+file_pattern+'*'], tar_path, process_path)
     return experiment_analyzers
 
 # def populate_analyzer(analyzer):
@@ -110,7 +111,7 @@ def get_experiment_analysers(file_pattern, tar_path):
 #     analyzer.memcached_logs
 #     return analyzer
 
-# all_analysers = get_experiment_analysers(f"*{sys.argv[1]}*", sys.argv[2])
+# all_analysers = get_experiment_analysers(f"*{sys.argv[1]}*", sys.argv[2], sys.argv[3])
 # for analyser_id in all_analysers:
 #     print("~~~~~",analyser_id, "~~~~~")
 #     analyzer = populate_analyzer(all_analysers[analyser_id])

@@ -11,7 +11,7 @@ def populate_analyzer(analyzer):
     analyzer.memcached_logs
     return analyzer
 
-all_analysers = az.get_experiment_analysers(f"*{sys.argv[1]}*", sys.argv[2])
+all_analysers = az.get_experiment_analysers(f"*{sys.argv[1]}*", sys.argv[2], sys.argv[3])
 for analyser_id in all_analysers:
     print("~~~~~",analyser_id, "~~~~~")
     analyzer = populate_analyzer(all_analysers[analyser_id])
