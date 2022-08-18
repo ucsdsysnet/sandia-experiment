@@ -16,7 +16,7 @@
             "username": "rukshani",
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
-            "repeat": 1,
+            "repeat": 2,
             "nic_type": "cx5",
             "workloads": [
                 {

@@ -12,6 +12,7 @@ CX5 = "cx5"
 CX5_IFNAME = "ens3f0"
 
 DATAPATH_PROCESSED = "/tmp/data-processed/"
+DATAPATH_RAW = "/tmp/data-raw/"
 
 IPERF_SERVER_PORT = 5100
 IPERF_CLIENT_PORT = 5100 

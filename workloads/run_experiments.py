@@ -9,6 +9,8 @@ import implementor as impl
 import util
 import logging
 import subprocess
+import constant as c
+import copy
 
 script_dir = os.path.dirname(__file__)
 
@@ -31,14 +33,13 @@ class Experiment:
         self.logs = {
             # 'iperf_server': '/tmp/iperf-{}-{}.csv'.format("iperf", self.exp_time)
         }
-        self.tar_filename = "{}-{}-r{}-{}.tar.gz".format(self.id, self.name, str(self.iteration), self.exp_time)
+        self.tar_filename = "{}-{}-{}.tar.gz".format(self.id, self.name, self.exp_time)
         
     
     def append_logs(self, log_file):
         self.all_logs.append(log_file)
 
-    def run(self, iteration):
-        self.iteration = iteration
+    def run(self):
         with ExitStack() as stack:
 
             util.log_queue_status("start", self, self.experiment)
@@ -96,18 +97,23 @@ class Experiment:
                 ' '.join(logs_to_compress),
                 ' && rm -f '.join(logs_to_compress))
             proc = subprocess.Popen(cmd, shell=True)
+            subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, c.DATAPATH_RAW), shell=True)
             logging.info('Running background command: {} (PID={})'.format(cmd, proc.pid))
         
-
     def get_repeat(self):
         return self.experiment['repeat']
+
+    def set_iteration(self, iteration):
+        self.iteration = iteration
 
 def load_experiments(all_experiments):
     experiments = OrderedDict()
     for i in range(len(all_experiments)):
-        experiment_id = "Exp" +  str(i) 
-        exp = Experiment(experiment_id, all_experiments[i])
-        experiments[experiment_id] = exp
+        for x in range(all_experiments[i]['repeat']):
+            experiment_id = "Exp" +  str(i) + "-r" + str(x)
+            exp = Experiment(experiment_id, all_experiments[i])
+            exp.set_iteration(x)
+            experiments[experiment_id] = exp
     return experiments
 
 def load_config_file(config_filename):
@@ -124,8 +130,7 @@ def main(args):
     exps = load_experiments(config['experiments'])
     for experiment in exps.values():
         print("+++++++++++++++++", "Running Experiment:", experiment.id, "++++++++++++++++")
-        for x in range(experiment.get_repeat()):
-            experiment.run(x)
+        experiment.run()
 
 def parse_args():
     """Parse commandline arguments"""
