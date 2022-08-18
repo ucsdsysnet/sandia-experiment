@@ -16,7 +16,7 @@
             "username": "rukshani",
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 30,
-            "repeat": 2,
+            "repeat": 5,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw",
             "workloads": [
@@ -24,7 +24,7 @@
                     "iperf": {
                         "clients": 3,
                         "server_instances": 1,
-                        "mode": "NORMAL", 
+                        "mode": "CLUSTER", 
                         "parallel": 32
                     }
                 }
