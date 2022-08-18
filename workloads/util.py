@@ -20,18 +20,20 @@ def get_iperf_server_cmd(server_ip, server_port, log_file_name):
                                         log_file_name)
     return start_server_cmd
 
-def get_iperf_client_cmd(server_ip, server_port, client_ip, client_port, log_file_name):
+def get_iperf_client_cmd(server_ip, server_port, client_ip, client_port, duration, log_file_name):
     start_client_cmd = ('iperf3 --client {} '
                                     '--port {} '
                                     '--bind {} '
                                     '--cport {} '
                                     '--zerocopy '
+                                    '--time {} '
                                     '--json '
                                     '--logfile {} ').format(
                                         server_ip,
                                         server_port,
                                         client_ip,
                                         client_port,
+                                        duration, 
                                         log_file_name)
     return start_client_cmd
 

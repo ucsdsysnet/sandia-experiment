@@ -63,7 +63,7 @@ class Experiment:
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()
-            time.sleep(30)
+            time.sleep(self.experiment['duration'] + 5)
             #Collect logs
             for index, workload in enumerate(workload_types):
                 log_switcher = {
@@ -97,7 +97,7 @@ class Experiment:
                 ' '.join(logs_to_compress),
                 ' && rm -f '.join(logs_to_compress))
             proc = subprocess.Popen(cmd, shell=True)
-            subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, c.DATAPATH_RAW), shell=True)
+            subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, self.experiment['tar_location']), shell=True)
             logging.info('Running background command: {} (PID={})'.format(cmd, proc.pid))
         
     def get_repeat(self):
