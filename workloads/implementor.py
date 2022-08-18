@@ -121,6 +121,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
                                                         server_port, 
                                                         client_ip,
                                                         client_port,
+                                                        exp_template['duration'],
                                                         log_name[log_id])
             server_port = server_port + 1
             client_port = client_port + 1
@@ -150,6 +151,7 @@ def start_iperf_clients(exp_obj, exp_template, workload, stack):
                                                         server_ports[server_port_index], 
                                                         exp_template['client_list'][0],
                                                         client_port,
+                                                        exp_template['duration'],
                                                         log_name[log_id])
 
             print("iperf client cmd>", start_client_cmd)
