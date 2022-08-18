@@ -56,13 +56,13 @@ def get_memcached_client_cmd(server_ip, server_port, log_file_name):
 
 def log_experiment_details(exp_obj, exp_template):
     # print(exp_template)
-    log_name = { 'experiment_details' : '/tmp/experiment-details-{}-r{}-{}.json'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)}
+    log_name = { 'experiment_details' : '/tmp/experiment-details-{}-{}.json'.format(exp_obj.id, exp_obj.exp_time)}
     exp_obj.append_logs(log_name)
     with open(log_name['experiment_details'], 'w') as f:
         json.dump(exp_template, f)
 
 def collect_iperf_logs(exp_obj, exp_template, workload):
-    all_server_files = '*{}-r{}-{}.json"'.format(exp_obj.id, exp_obj.iteration, exp_obj.exp_time)
+    all_server_files = '*{}-{}.json"'.format(exp_obj.id, exp_obj.exp_time)
     
     cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} /tmp/'.format(
         exp_template['key_filename'],
@@ -80,9 +80,9 @@ def collect_iperf_logs(exp_obj, exp_template, workload):
 def collect_memcached_logs(exp_obj, exp_template, workload):
     print("collect_memcached_logs")
 
-def get_log_name(name, instance, exp_id, iteration, exp_time, ext_type):
+def get_log_name(name, instance, exp_id, exp_time, ext_type):
     log_id = get_log_id(name, instance)
-    log_name = { log_id : '/tmp/{}-i{}-{}-r{}-{}.{}'.format(name, str(instance), exp_id, iteration, exp_time, ext_type)}
+    log_name = { log_id : '/tmp/{}-i{}-{}-{}.{}'.format(name, str(instance), exp_id, exp_time, ext_type)}
     return log_name
 
 def get_log_id(name, instance):
@@ -94,7 +94,7 @@ def log_queue_status(period, exp_obj, exp_template):
     print("iteration:", period, exp_obj.iteration)
     client_log_id = get_log_id(c.CLIENT_QUEUE_STATS, 0)
     if period == "start":
-        client_log_name = get_log_name(c.CLIENT_QUEUE_STATS, 0, exp_obj.id, exp_obj.iteration, exp_obj.exp_time, c.CSV)
+        client_log_name = get_log_name(c.CLIENT_QUEUE_STATS, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
