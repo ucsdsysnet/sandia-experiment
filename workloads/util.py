@@ -58,9 +58,10 @@ def get_memcached_client_cmd(server_ip, server_port, log_file_name):
 
 def log_experiment_details(exp_obj, exp_template):
     # print(exp_template)
-    log_name = { 'experiment_details' : '/tmp/experiment-details-{}-{}.json'.format(exp_obj.id, exp_obj.exp_time)}
+    log_id = get_log_id(c.EXPERIMENT_DETAILS_LOG_ID, 0)
+    log_name = get_log_name(c.EXPERIMENT_DETAILS_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.JSON)
     exp_obj.append_logs(log_name)
-    with open(log_name['experiment_details'], 'w') as f:
+    with open(log_name[log_id], 'w') as f:
         json.dump(exp_template, f)
 
 def collect_iperf_logs(exp_obj, exp_template, workload):

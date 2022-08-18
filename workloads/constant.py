@@ -2,6 +2,7 @@ CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
 IP_MODE = "IP"
 
+EXPERIMENT_DETAILS_LOG_ID = "experiment-details"
 CLIENT_QUEUE_STATS = "client-nic-queue"
 SERVER_QUEUE_STATS = "server-nic-queue"
 
