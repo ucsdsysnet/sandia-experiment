@@ -15,6 +15,8 @@ CX5_IFNAME = "ens3f0"
 DATAPATH_PROCESSED = "/tmp/data-processed/"
 DATAPATH_RAW = "/tmp/data-raw/"
 
+BPS_TO_GBPS = 0.000000001
+
 IPERF_SERVER_PORT = 5100
 IPERF_CLIENT_PORT = 5100 
 IPERF_SERVER_LOG_ID = "iperf-server"
