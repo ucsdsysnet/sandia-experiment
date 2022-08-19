@@ -48,6 +48,15 @@
 ### Workloads
 - NOTE: Memcached experiments assume that the memcached server is up and populated with data. Instrcutions on setting up memcached can be find in sandia-experiment/workloads/memcached/instrcutions.md file. 
 
+# Experiment Analyzer
+- Generic
+python3 analysis/analyzer.py "file_pattern" "tar_location" "process_location"
+eg:python3 analysis/analyzer.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
+
+- Iperf throughput
+python3 analysis/iperf_stats.py "file_pattern" "tar_location" "process_location"
+eg: python3 analysis/iperf_stats.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
+
 ### Other (Only when you need individual scripts instead of going with the default cluster setup)
 
 #### Regardless of the NIC type - Generic performance tuning (On both sender and receiver)
