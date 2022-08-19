@@ -18,10 +18,10 @@
             "duration": 30,
             "repeat": 5,
             "nic_type": "cx5",
-            "tar_location": "/tmp/data-raw",
+            "tar_location": "/tmp/data-raw-memcached",
             "workloads": [
                 {
-                    "iperf": {
+                    "memcached": {
                         "clients": 3,
                         "server_instances": 1,
                         "mode": "CLUSTER", 

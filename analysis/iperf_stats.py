@@ -12,6 +12,7 @@ def populate_analyzer(analyzer):
     analyzer.memcached_logs
     return analyzer
 
+#args - file_pattern, tar_location, data_process_location
 all_analysers = az.get_experiment_analysers(f"*{sys.argv[1]}*", sys.argv[2], sys.argv[3])
 all_ids = []
 exp_sum_sent = []
