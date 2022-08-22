@@ -96,29 +96,28 @@ def get_log_id(name, instance):
 def log_queue_status(period, exp_obj, exp_template):
     print("iteration:", period, exp_obj.iteration)
     client_log_id = get_log_id(c.CLIENT_QUEUE_STATS, 0)
+    iface_name = get_interface_name(exp_template['client_list'][0])
     if period == "start":
         client_log_name = get_log_name(c.CLIENT_QUEUE_STATS, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
-            df_start_merged = get_q_dataframe(period)
+            df_start_merged = get_q_dataframe(period, iface_name)
             df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
     else:
         if exp_template['nic_type'] == c.CX5:
-            print(exp_obj.all_logs)
             df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
                     names=["q_number", "start_rx", "start_tx"])
-            df_end = get_q_dataframe(period)
+            df_end = get_q_dataframe(period, iface_name)
             different_start_cols = df_start.columns.difference(df_end.columns)
             df_start_cols = df_start[different_start_cols]
             df_all_merged = pd.merge(df_end, df_start_cols, left_index=True, right_index=True, how='inner')
             df_all_merged.to_csv(exp_obj.all_logs[0][client_log_id], header=True, index=True)
             
-def get_queue_stats(period, tx_or_rx):
-    #TODO: Get Iface based on IP
+def get_queue_stats(period, iface_name, tx_or_rx):
     #TODO: remote command when client is remote
     df = pd.DataFrame()
-    out_str = run_local_command('ethtool -S {} | grep "{}[0-9]*_packets"'.format(c.CX5_IFNAME, tx_or_rx), True)
+    out_str = run_local_command('ethtool -S {} | grep "{}[0-9]*_packets"'.format(iface_name, tx_or_rx), True)
     queues = out_str.split("\n")
     q_numbers = []
     packets_per_queue = []
@@ -134,17 +133,20 @@ def get_queue_stats(period, tx_or_rx):
     return df
 
 def extract_queue_number(queue_details):
-    # print(re.findall(r'\b\d+\b', queue_details))
     q_number = ''.join(filter(str.isdigit, queue_details))
     if q_number.strip() == '':
         return 'all'
     else:
         return q_number
 
-def get_q_dataframe(period):
-    df_tx = get_queue_stats(period, 'tx')
-    df_rx = get_queue_stats(period, 'rx')
+def get_q_dataframe(period, iface_name):
+    df_tx = get_queue_stats(period, iface_name, 'tx')
+    df_rx = get_queue_stats(period, iface_name, 'rx')
     different_tx_cols = df_tx.columns.difference(df_rx.columns)
     df_tx_cols = df_tx[different_tx_cols]
     df_merged = pd.merge(df_rx, df_tx_cols, left_index=True, right_index=True, how='inner')
     return df_merged
+
+def get_interface_name(ip_addr):
+    out_str = run_local_command("netstat -ie | grep -B1 {} | head -n1 | awk '{{print $1}}'".format(ip_addr), True)
+    return out_str.strip()[:-1]
