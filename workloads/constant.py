@@ -10,7 +10,7 @@ JSON = "json"
 CSV = "csv"
 
 CX5 = "cx5"
-CX5_IFNAME = "ens3f0"
+CX5_IFNAME = "ens4"
 
 DATAPATH_PROCESSED = "/tmp/data-processed/"
 DATAPATH_RAW = "/tmp/data-raw/"
