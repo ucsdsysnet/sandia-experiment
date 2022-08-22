@@ -34,8 +34,8 @@ class Experiment:
             # 'iperf_server': '/tmp/iperf-{}-{}.csv'.format("iperf", self.exp_time)
         }
         self.tar_filename = "{}-{}-{}.tar.gz".format(self.id, self.name, self.exp_time)
+        self.completed_experiment_procs = []
         
-    
     def append_logs(self, log_file):
         self.all_logs.append(log_file)
 
@@ -75,32 +75,43 @@ class Experiment:
         util.log_experiment_details(self, self.experiment)
         util.log_queue_status("end", self, self.experiment)
         self.compress_logs()
+        self.cleanup_experiments()
 
     def compress_logs(self):
         print("compress logs")
         logs_to_compress = []
-        # print(self.all_logs)
         for log in self.all_logs:
-            # print(log)
             all_keys = log.keys()
             for index, key in enumerate(all_keys):
-                # print(log[key])
                 if os.path.isfile(log[key]):
                     logs_to_compress += [os.path.basename(log[key])]
         if len(logs_to_compress) == 0:
             logging.warning('Found no logs for this experiment to compress')
         else:
             logging.info('Compressing {} logs into tarfile: {}'.format(len(logs_to_compress), self.tar_filename))
-            # print(logs_to_compress)
             cmd = 'cd /tmp && tar -czf {} {} && rm -f {}'.format(
                 os.path.basename(self.tar_filename),
                 ' '.join(logs_to_compress),
                 ' && rm -f '.join(logs_to_compress))
-            proc = subprocess.Popen(cmd, shell=True)
+            proc_compress = subprocess.Popen(cmd, shell=True)
+            self.append_processes(proc_compress)
             os.makedirs(self.experiment['tar_location'], exist_ok = True)
-            subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, self.experiment['tar_location']), shell=True)
-            logging.info('Running background command: {} (PID={})'.format(cmd, proc.pid))
+            proc_mov = subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, self.experiment['tar_location']), shell=True)
+            self.append_processes(proc_mov)
         
+    def append_processes(self, proc):
+        if proc == -1:
+            print('Proc is -1')
+        elif proc is not None:
+            self.completed_experiment_procs.append(proc)
+
+    def cleanup_experiments(self):
+        for proc in self.completed_experiment_procs:
+            logging.info('Waiting for subprocess to finish PID={}'.format(proc.pid))
+            proc.wait()
+            if proc.returncode != 0:
+                logging.warning('Error cleaning up experiment PID={}'.format(proc.pid))
+
     def get_repeat(self):
         return self.experiment['repeat']
 
