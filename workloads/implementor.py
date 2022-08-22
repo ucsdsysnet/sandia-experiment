@@ -69,7 +69,7 @@ def start_iperf_server(exp_obj, exp_template, workload, stack):
                                         exp_template['server_list_wan'][0],
                                         username=exp_template['username'],
                                         logs=[log_name[log_id]],
-                                        key_filename=exp_template['key_filename'])
+                                        key_filename=exp_template['key_filename'], sudo=False)
 
             stack.enter_context(start_server())
     else:

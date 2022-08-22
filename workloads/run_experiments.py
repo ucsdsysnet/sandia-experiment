@@ -97,6 +97,7 @@ class Experiment:
                 ' '.join(logs_to_compress),
                 ' && rm -f '.join(logs_to_compress))
             proc = subprocess.Popen(cmd, shell=True)
+            os.makedirs(self.experiment['tar_location'], exist_ok = True)
             subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, self.experiment['tar_location']), shell=True)
             logging.info('Running background command: {} (PID={})'.format(cmd, proc.pid))
         
