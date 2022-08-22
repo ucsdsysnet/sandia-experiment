@@ -50,12 +50,12 @@
 
 # Experiment Analyzer
 - Generic
-python3 analysis/analyzer.py "file_pattern" "tar_location" "process_location"
-eg:python3 analysis/analyzer.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
+    - python3 analysis/analyzer.py "file_pattern" "tar_location" "process_location"
+        - eg:python3 analysis/analyzer.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
 
 - Iperf throughput
-python3 analysis/iperf_stats.py "file_pattern" "tar_location" "process_location"
-eg: python3 analysis/iperf_stats.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
+    - python3 analysis/iperf_stats.py "file_pattern" "tar_location" "process_location"
+        - eg: python3 analysis/iperf_stats.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed"
 
 ### Other (Only when you need individual scripts instead of going with the default cluster setup)
 
