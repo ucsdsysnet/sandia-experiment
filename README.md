@@ -52,7 +52,7 @@
 <!-- - Generic
     - python3 analysis/analyzer.py "file_pattern" "tar_location" "process_location"
         - eg:python3 analysis/analyzer.py "Exp0-r0--iperf-20220818T143252" "/tmp/data-raw" "/tmp/data-processed" -->
-- Generic Analyzer (Use this as the base analysis script)
+- Generic Analyzer (Use this as the base analysis script when developing specific analyzers)
     - analysis/analyzer.py 
 
 - Iperf throughput
