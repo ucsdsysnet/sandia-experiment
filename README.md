@@ -90,10 +90,24 @@
 - ./scripts/setup/add_filters.sh -n cx5
 - ./scripts/setup/add_filters.sh -n fpga
 
+### Enable XPS
+```
+./scripts/setup/enable_xps.sh -n fpga
+./scripts/setup/enable_xps.sh -n cx5
+```
+
+### Disable XPS
+```
+sudo ./scripts/setup/xps_setup.sh --dev ifname --default --disable
+```
+
 ### Add dummy rules
 #### on sender
 #### Edit sandia-experiment/scripts/setup/ip_interface.config with relevant values
-- ./scripts/setup/dummy_filters.sh -n fpga
+```
+./scripts/setup/dummy_filters.sh -n fpga
+./scripts/setup/dummy_filters.sh -n cx5
+```
 
 
 
