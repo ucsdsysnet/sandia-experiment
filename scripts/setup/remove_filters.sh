@@ -27,8 +27,10 @@ main()
     if [[ $NIC_TYPE = "fpga" ]]; then
         echo "fpga"
         remove_clsact $FPGA_IFACE 
+        ./scripts/setup/enable_xps.sh -n fpga
     else
         remove_clsact $cx5_IFACE
+        ./scripts/setup/enable_xps.sh -n cx5
     fi
 }
 
