@@ -1,0 +1,184 @@
+HiBench
+
+sudo apt-get update
+sudo apt-get remove --purge openjdk-11-'*'
+sudo apt-get install -y openjdk-8-jdk
+
+#Maven
+sudo apt-get install -y maven
+
+#scala
+sudo apt-get install -y scala
+
+java -version; javac -version; scala -version; git --version
+
+var=$(pwd)/sw
+mkdir -p $var
+cd $var 
+wget https://dlcdn.apache.org/hadoop/common/hadoop-3.2.4/hadoop-3.2.4.tar.gz   
+tar -xzvf hadoop-3.2.4.tar.gz 
+sudo mv hadoop-3.2.4 $HOME/
+
+#Add the JAVA_HOME path
+sudo nano $HOME/hadoop/etc/hadoop/hadoop-env.sh
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+
+#Run Hadoop 
+$HOME/hadoop/bin/hadoop 
+
+
+git clone https://github.com/Intel-bigdata/HiBench.git
+cd /opt/HiBench
+
+#### Build Hadoop and spark benchmarks
+mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#Following is not needed
+wget https://archive.apache.org/dist/spark/spark-3.0.3/spark-3.0.3-bin-hadoop3.2.tgz
+wget https://archive.apache.org/dist/spark/spark-3.0.3/spark-3.0.3-bin-without-hadoop.tgz
+
+tar -xzvf spark-3.0.3-bin-hadoop3.2.tgz 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#Instructions ( https://www.linode.com/docs/guides/how-to-install-and-set-up-hadoop-cluster/ )
+
+# edit the /etc/hosts file to add the private IP addresses of the three servers.
+
+vi $HOME/.profile
+PATH=$HOME/hadoop/bin:$HOME/hadoop/sbin:$PATH
+
+vi $HOME/.bashrc
+export HADOOP_HOME=$HOME/hadoop
+export PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin
+
+cd $HOME/hadoop/etc/hadoop 
+
+# Edit core-site.xml (set the NameNode location to node-master on port 9000)
+<configuration>
+        <property>
+            <name>fs.default.name</name>
+            <value>hdfs://node1:9000</value>
+        </property>
+    </configuration>
+
+# Edit hdfs-site.xml 
+<configuration>
+    <property>
+            <name>dfs.namenode.name.dir</name>
+            <value>/users/rukshani/data/nameNode</value>
+    </property>
+
+    <property>
+            <name>dfs.datanode.data.dir</name>
+            <value>/users/rukshani/data/dataNode</value>
+    </property>
+
+    <property>
+            <name>dfs.replication</name>
+            <value>1</value>
+    </property>
+</configuration>
+
+# Set YARN as Job Scheduler
+# Edit mapred-site.xml
+<configuration>
+    <property>
+            <name>mapreduce.framework.name</name>
+            <value>yarn</value>
+    </property>
+    <property>
+            <name>yarn.app.mapreduce.am.env</name>
+            <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    </property>
+    <property>
+            <name>mapreduce.map.env</name>
+            <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    </property>
+    <property>
+            <name>mapreduce.reduce.env</name>
+            <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+    </property>
+</configuration>
+
+# Configure YARN
+## In the value field for the yarn.resourcemanager.hostname, replace XX.XX.XX.XX with the public IP address of node-master:
+Edit yarn-site.xml
+<configuration>
+    <property>
+            <name>yarn.acl.enable</name>
+            <value>0</value>
+    </property>
+
+    <property>
+            <name>yarn.resourcemanager.hostname</name>
+            <value>128.110.218.248</value>
+    </property>
+
+    <property>
+            <name>yarn.nodemanager.aux-services</name>
+            <value>mapreduce_shuffle</value>
+    </property>
+</configuration>
+
+# Configure Workers
+The file workers is used by startup scripts to start required daemons on all nodes. Edit $HOME/hadoop/etc/hadoop/workers to include your worker nodes
+
+# Duplicate Config Files on Each Node
+cd sw
+scp hadoop-3.2.4.tar.gz rukshani@128.110.219.9:/users/rukshani
+
+#on worker node
+tar -xvf hadoop-3.2.4.tar.gz
+mv hadoop-3.2.4 hadoop
+
+# Copy the Hadoop configuration files to the worker nodes:
+scp $HOME/hadoop/etc/hadoop/* rukshani@128.110.219.9:/users/rukshani/hadoop/etc/hadoop/
+
+#On node-master, run the following command: (make sure to do this after editing xml files)
+hdfs namenode -format
+
+Your Hadoop installation is now configured and ready to run.
+
+# Start HDFS, Yarn in the cluster. start-dfs.sh
+
+#Check that every process is running with the jps command on each node. On node-master, you should see the following (the PID number will be different):
+21922 Jps
+21603 NameNode
+21787 SecondaryNameNode
+
+# Worker you should see the following:
+19728 DataNode
+19819 Jps
+
+#stop-dfs.sh
+
+#start and stop yarn 
+start-yarn.sh
+* Check that everything is running with the jps command. In addition to the previous HDFS daemon, you should see a ResourceManager on node-master, and a NodeManager on worker nodes.
+#stop-yarn.sh
+
+### Configure HiBench
+cp conf/hadoop.conf.template conf/hadoop.conf
+Edit the file with correct values
+eg:
+# Hadoop home
+hibench.hadoop.home     /users/rukshani/hadoop
+
+# The path of hadoop executable
+hibench.hadoop.executable     ${hibench.hadoop.home}/bin/hadoop
+
+# Hadoop configraution directory
+hibench.hadoop.configure.dir  ${hibench.hadoop.home}/etc/hadoop
+
+# The root HDFS path to store HiBench data
+hibench.hdfs.master       hdfs://10.10.10.100:9000
+
+
+# Hadoop release provider. Supported value: apache
+hibench.hadoop.release    apache
+
+
+sudo apt install python2
+Make sure /etc/hosts is correct on all nodes
