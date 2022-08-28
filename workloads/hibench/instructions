@@ -17,7 +17,7 @@ mkdir -p $var
 cd $var 
 wget https://dlcdn.apache.org/hadoop/common/hadoop-3.2.4/hadoop-3.2.4.tar.gz   
 tar -xzvf hadoop-3.2.4.tar.gz 
-sudo mv hadoop-3.2.4 $HOME/
+sudo mv hadoop-3.2.4 $HOME/hadoop
 
 #Add the JAVA_HOME path
 sudo nano $HOME/hadoop/etc/hadoop/hadoop-env.sh
@@ -26,13 +26,12 @@ export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 #Run Hadoop 
 $HOME/hadoop/bin/hadoop 
 
-
+cd /opt
 git clone https://github.com/Intel-bigdata/HiBench.git
 cd /opt/HiBench
 
 #### Build Hadoop and spark benchmarks
 mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
-
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -104,7 +103,7 @@ cd $HOME/hadoop/etc/hadoop
 
 # Configure YARN
 ## In the value field for the yarn.resourcemanager.hostname, replace XX.XX.XX.XX with the public IP address of node-master:
-Edit yarn-site.xml
+Edit yarn-site.xml
 <configuration>
     <property>
             <name>yarn.acl.enable</name>
@@ -141,7 +140,7 @@ hdfs namenode -format
 
 Your Hadoop installation is now configured and ready to run.
 
-# Start HDFS, Yarn in the cluster. start-dfs.sh
+# Start HDFS, Yarn in the cluster.start-dfs.sh
 
 #Check that every process is running with the jps command on each node. On node-master, you should see the following (the PID number will be different):
 21922 Jps
