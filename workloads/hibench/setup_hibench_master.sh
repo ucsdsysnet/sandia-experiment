@@ -27,5 +27,5 @@ $HOME/hadoop/bin/hadoop
 # git clone https://github.com/Intel-bigdata/HiBench.git
 
 # Build Hadoop and spark benchmarks
-cd  $HOME/sw/HiBench
-mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
+# cd  $HOME/sw/HiBench
+# mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package

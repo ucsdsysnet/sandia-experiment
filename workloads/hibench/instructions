@@ -44,6 +44,9 @@ tar -xzvf spark-3.0.3-bin-hadoop3.2.tgz
 #Instructions ( https://www.linode.com/docs/guides/how-to-install-and-set-up-hadoop-cluster/ )
 
 # edit the /etc/hosts file to add the private IP addresses of the three servers.
+# 127.0.0.1       localhost loghost localhost.d100g.rotornet-pg0.utah.cloudlab.us
+# 10.10.10.100    node1
+# 10.10.20.100    node2
 
 vi $HOME/.profile
 PATH=$HOME/hadoop/bin:$HOME/hadoop/sbin:$PATH
@@ -122,7 +125,7 @@ Edit yarn-site.xml
 </configuration>
 
 # Configure Workers
-The file workers is used by startup scripts to start required daemons on all nodes. Edit $HOME/hadoop/etc/hadoop/workers to include your worker nodes
+The file workers is used by startup scripts to start required daemons on all nodes. Edit $HOME/hadoop/etc/hadoop/workers to include your worker nodes
 
 # Duplicate Config Files on Each Node
 cd sw
