@@ -21,7 +21,7 @@
 
 # echo 'JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")' >> $HOME/hadoop/etc/hadoop/hadoop-env.sh
 
-$HOME/hadoop/bin/hadoop 
+# $HOME/hadoop/bin/hadoop 
 
 # cd $HOME/sw 
 # git clone https://github.com/Intel-bigdata/HiBench.git
@@ -29,3 +29,8 @@ $HOME/hadoop/bin/hadoop
 # Build Hadoop and spark benchmarks
 # cd  $HOME/sw/HiBench
 # mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
+
+# echo 'PATH=$HOME/hadoop/bin:$HOME/hadoop/sbin:$PATH' >> $HOME/.profile
+# echo 'export HADOOP_HOME=$HOME/hadoop' >> $HOME/.bashrc
+# echo 'export PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin' >> $HOME/.bashrc
+
