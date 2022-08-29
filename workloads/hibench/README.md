@@ -3,6 +3,16 @@
 ./workloads/hibench/setup_hibench.sh
 ```
 
+## Setup worker nodes (Run on each worker node)
+```
+./workloads/hibench/setup_hibench_worker.sh
+```
+
+## Configure HiBench (Run on master)
+```
+./workloads/hibench/configure_hibench.sh
+```
+
 
 
 
