@@ -5,6 +5,7 @@
 MASTER_HOSTNAME=$master_hostname
 MASTER_PUBLIC_IP=$master_public_ip
 WORKER_NODES=$worker_nodes
+KEY_FILE=$key_file
 
 sudo chown -R $USER $HOME
 
@@ -116,7 +117,10 @@ echo """<configuration>
 
 IFS=',' read -ra WORKER <<< "$WORKER_NODES"
 for i in "${WORKER[@]}"; do
-    echo "$i" >> $HOME/hadoop/etc/hadoop/workers
+        echo "$i" >> $HOME/hadoop/etc/hadoop/workers
+        eval `ssh-agent -s`
+        ssh-add $HOME/.ssh/$KEY_FILE
+        scp -r $HOME/sw/hadoop-3.2.4.tar.gz $USER@$i:$HOME
 done
 
 # Run this command everytime you change any xml files 
