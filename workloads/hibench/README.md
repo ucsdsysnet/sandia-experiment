@@ -13,6 +13,6 @@
 ./workloads/hibench/configure_hibench.sh
 ```
 
-
+## Make sure /etc/hosts is correct on all nodes
 
 
