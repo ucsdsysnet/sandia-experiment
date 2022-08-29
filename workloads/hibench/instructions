@@ -138,7 +138,7 @@ mv hadoop-3.2.4 hadoop
 # Copy the Hadoop configuration files to the worker nodes:
 scp $HOME/hadoop/etc/hadoop/* rukshani@128.110.219.9:/users/rukshani/hadoop/etc/hadoop/
 
-#On node-master, run the following command: (make sure to do this after editing xml files)
+#On node-master, run the following command: (make sure to do this after editing xml files everytime)
 hdfs namenode -format
 
 Your Hadoop installation is now configured and ready to run.

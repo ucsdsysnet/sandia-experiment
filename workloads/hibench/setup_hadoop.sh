@@ -1,5 +1,11 @@
 #!/bin/bash
 
+. workloads/hibench/configurations.config
+
+MASTER_HOSTNAME=$master_hostname
+MASTER_PUBLIC_IP=$master_public_ip
+WORKER_NODES=$worker_nodes
+
 # sudo chown -R $USER $HOME
 
 # sudo apt-get update
@@ -34,3 +40,83 @@
 # echo 'export HADOOP_HOME=$HOME/hadoop' >> $HOME/.bashrc
 # echo 'export PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin' >> $HOME/.bashrc
 
+# sed -i '/\<configuration\>/d' $HOME/hadoop/etc/hadoop/core-site.xml
+# sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/core-site.xml
+
+# echo """<configuration>
+#         <property>
+#             <name>fs.default.name</name>
+#             <value>hdfs://$MASTER_HOSTNAME:9000</value>
+#         </property>
+#     </configuration>""" >> $HOME/hadoop/etc/hadoop/core-site.xml
+
+# sed -i '/\<configuration\>/d' $HOME/hadoop/etc/hadoop/hdfs-site.xml
+# sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/hdfs-site.xml
+
+# echo """<configuration>
+#     <property>
+#             <name>dfs.namenode.name.dir</name>
+#             <value>$HOME/data/nameNode</value>
+#     </property>
+
+#     <property>
+#             <name>dfs.datanode.data.dir</name>
+#             <value>$HOME/data/dataNode</value>
+#     </property>
+
+#     <property>
+#             <name>dfs.replication</name>
+#             <value>1</value>
+#     </property>
+# </configuration>""" >> $HOME/hadoop/etc/hadoop/hdfs-site.xml
+
+# Set YARN as Job Scheduler
+# sed -i '/\<configuration\>/d' $HOME/hadoop/etc/hadoop/mapred-site.xml
+# sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/mapred-site.xml
+
+# echo """<configuration>
+#     <property>
+#             <name>mapreduce.framework.name</name>
+#             <value>yarn</value>
+#     </property>
+#     <property>
+#             <name>yarn.app.mapreduce.am.env</name>
+#             <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+#     </property>
+#     <property>
+#             <name>mapreduce.map.env</name>
+#             <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+#     </property>
+#     <property>
+#             <name>mapreduce.reduce.env</name>
+#             <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+#     </property>
+# </configuration>""" >> $HOME/hadoop/etc/hadoop/mapred-site.xml
+
+# Configure YARN
+# sed -i '/\<configuration\>/d' $HOME/hadoop/etc/hadoop/yarn-site.xml
+# sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/yarn-site.xml
+
+# echo """<configuration>
+#     <property>
+#             <name>yarn.acl.enable</name>
+#             <value>0</value>
+#     </property>
+
+#     <property>
+#             <name>yarn.resourcemanager.hostname</name>
+#             <value>$MASTER_PUBLIC_IP</value>
+#     </property>
+
+#     <property>
+#             <name>yarn.nodemanager.aux-services</name>
+#             <value>mapreduce_shuffle</value>
+#     </property>
+# </configuration>""" >> $HOME/hadoop/etc/hadoop/yarn-site.xml
+
+# IFS=',' read -ra WORKER <<< "$WORKER_NODES"
+# for i in "${WORKER[@]}"; do
+#     echo "$i" >> $HOME/hadoop/etc/hadoop/workers
+# done
+
+# hdfs namenode -format
