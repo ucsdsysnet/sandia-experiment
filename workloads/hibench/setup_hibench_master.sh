@@ -4,6 +4,7 @@
 
 MASTER_HOSTNAME=$master_hostname
 MASTER_PUBLIC_IP=$master_public_ip
+MASTER_PORT=$hibench_port
 WORKER_NODES=$worker_nodes
 KEY_FILE=$key_file
 
@@ -47,7 +48,7 @@ sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/core-site.xml
 echo """<configuration>
         <property>
             <name>fs.default.name</name>
-            <value>hdfs://$MASTER_HOSTNAME:9000</value>
+            <value>hdfs://$MASTER_HOSTNAME:$MASTER_PORT</value>
         </property>
     </configuration>""" >> $HOME/hadoop/etc/hadoop/core-site.xml
 
