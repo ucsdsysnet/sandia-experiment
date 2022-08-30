@@ -28,7 +28,6 @@ tar -xzvf hadoop-3.2.4.tar.gz
 mv hadoop-3.2.4 $HOME/hadoop
 
 echo 'JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")' >> $HOME/hadoop/etc/hadoop/hadoop-env.sh
-export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
 $HOME/hadoop/bin/hadoop 
 
@@ -42,6 +41,7 @@ mvn -Phadoopbench -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
 echo 'PATH=$HOME/hadoop/bin:$HOME/hadoop/sbin:$PATH' >> $HOME/.profile
 echo 'export HADOOP_HOME=$HOME/hadoop' >> $HOME/.bashrc
 echo 'export PATH=${PATH}:${HADOOP_HOME}/bin:${HADOOP_HOME}/sbin' >> $HOME/.bashrc
+echo 'export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")' >> $HOME/.bashrc
 
 sed -i '/\<configuration\>/d' $HOME/hadoop/etc/hadoop/core-site.xml
 sed -i '/\<\/configuration\>/d' $HOME/hadoop/etc/hadoop/core-site.xml
