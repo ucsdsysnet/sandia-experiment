@@ -8,24 +8,24 @@
                 "10.10.10.100"
             ],
             "server_list_wan": [
-                "128.110.219.9"
+                "128.110.218.254"
             ],
             "client_list_wan": [
-                "128.110.218.248"
+                "128.110.218.253"
             ],
             "username": "rukshani",
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
-            "duration": 30,
-            "repeat": 5,
+            "duration": 60,
+            "repeat": 1,
             "nic_type": "cx5",
-            "tar_location": "/tmp/data-raw-memcached",
+            "tar_location": "/tmp/data-raw-hibench",
             "workloads": [
                 {
-                    "memcached": {
-                        "clients": 3,
-                        "server_instances": 1,
-                        "mode": "CLUSTER", 
-                        "parallel": 32
+                    "hibench": {
+                        "workloads": [
+                            "sort",
+                            "terasort"
+                        ]
                     }
                 }
             ]

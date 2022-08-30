@@ -48,9 +48,10 @@ class Experiment:
             workload_types = workloads[0].keys()
             #Start servers
             for index, workload in enumerate(workload_types):
-                #Assumption - memached server instances needs to be up and populated before running experiments
+                #Assumption - memached server instances needs to be up and populated before running experiments memcached experiments
                 server_switcher = {
-                    'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack)
+                    'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack),
+                    'hibench': lambda: impl.start_hibench(self, self.experiment, workloads[0]["hibench"], stack)
                 }
                 func = server_switcher.get(workload, lambda: "Invalid Server!")
                 func()
@@ -59,7 +60,8 @@ class Experiment:
             for index, workload in enumerate(workload_types):
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
-                    'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack)
+                    'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack),
+                    'hibench': lambda: impl.run_hibench(self, self.experiment, workloads[0]["hibench"], stack)
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()

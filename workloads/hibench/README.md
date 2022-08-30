@@ -16,12 +16,14 @@
 ## Make sure /etc/hosts is correct on all nodes
 
 ## Start and Stop HiBench
+```
 ./workloads/hibench/start_hibench.sh 
 ./workloads/hibench/stop_hibench.sh 
+```
 
-## Verification - After you start the HiBench you should see the following 
+## Verification - After you start HiBench run 'jps' command
 
-### On master
+### On master you should see the following
 ```
 519349 SecondaryNameNode
 520148 NodeManager
@@ -31,7 +33,7 @@
 520554 Jps
 ```
 
-### On worker 
+### On worker you should see the following
 ```
 495413 NodeManager
 495696 Jps
@@ -42,6 +44,15 @@
 ```
 $HOME/sw/HiBench/bin/workloads/micro/wordcount/prepare/prepare.sh
 $HOME/sw/HiBench/bin/workloads/micro/wordcount/hadoop/run.sh
+
+$HOME/sw/HiBench/bin/workloads/micro/terasort/prepare/prepare.sh
+$HOME/sw/HiBench/bin/workloads/micro/terasort/hadoop/run.sh
+
+$HOME/sw/HiBench/bin/workloads/micro/sort/prepare/prepare.sh
+$HOME/sw/HiBench/bin/workloads/micro/sort/hadoop/run.sh
+
+$HOME/sw/HiBench/bin/run_all.sh
+
 cat $HOME/sw/HiBench/report/hibench.report
 ```
 

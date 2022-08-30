@@ -205,3 +205,22 @@ def start_memcached_clients(exp_obj, exp_template, workload, stack):
                                                         log_name[log_id])
             print(start_client_cmd)
             run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
+
+###################~~~~HIBENCH~~~~##########################
+def start_hibench(exp_obj, exp_template, workload, stack):
+    start_hibench_cmd = "./workloads/hibench/start_hibench.sh"
+    os.system(start_hibench_cmd)
+    for hibench_work in workload['workloads']:
+        if hibench_work == 'sort':
+            os.system('$HOME/sw/HiBench/bin/workloads/micro/sort/prepare/prepare.sh')
+        if hibench_work == 'terasort':
+            os.system('$HOME/sw/HiBench/bin/workloads/micro/terasort/prepare/prepare.sh')
+
+def run_hibench(exp_obj, exp_template, workload, stack):
+    for hibench_work in workload['workloads']:
+        if hibench_work == 'sort':
+            os.system('$HOME/sw/HiBench/bin/workloads/micro/sort/hadoop/run.sh')
+        if hibench_work == 'terasort':
+            os.system('$HOME/sw/HiBench/bin/workloads/micro/terasort/hadoop/run.sh')
+    stop_hibench_cmd = "./workloads/hibench/stop_hibench.sh"
+    os.system(stop_hibench_cmd)
