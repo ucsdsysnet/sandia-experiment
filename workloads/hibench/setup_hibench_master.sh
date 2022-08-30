@@ -28,6 +28,7 @@ tar -xzvf hadoop-3.2.4.tar.gz
 mv hadoop-3.2.4 $HOME/hadoop
 
 echo 'JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")' >> $HOME/hadoop/etc/hadoop/hadoop-env.sh
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 
 $HOME/hadoop/bin/hadoop 
 
