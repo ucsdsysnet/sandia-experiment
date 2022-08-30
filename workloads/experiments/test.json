@@ -21,12 +21,7 @@
             "tar_location": "/tmp/data-raw-hibench",
             "workloads": [
                 {
-                    "hibench": {
-                        "workloads": [
-                            "sort",
-                            "terasort"
-                        ]
-                    }
+                    "hibench-terasort": {}
                 }
             ]
         }

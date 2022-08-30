@@ -51,7 +51,8 @@ class Experiment:
                 #Assumption - memached server instances needs to be up and populated before running experiments memcached experiments
                 server_switcher = {
                     'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack),
-                    'hibench': lambda: impl.start_hibench(self, self.experiment, workloads[0]["hibench"], stack)
+                    'hibench-sort': lambda: impl.prepare_hibench_sort(self, self.experiment, None, stack),
+                    'hibench-terasort': lambda: impl.prepare_hibench_terasort(self, self.experiment, None, stack)
                 }
                 func = server_switcher.get(workload, lambda: "Invalid Server!")
                 func()
@@ -61,7 +62,8 @@ class Experiment:
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
                     'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack),
-                    'hibench': lambda: impl.run_hibench(self, self.experiment, workloads[0]["hibench"], stack)
+                    'hibench-sort': lambda: impl.run_hibench_sort(self, self.experiment, None, stack),
+                    'hibench-terasort': lambda: impl.run_hibench_terasort(self, self.experiment, None, stack)
                 }
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()
@@ -74,6 +76,10 @@ class Experiment:
                 }
                 func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
                 func()
+        if 'hibench-sort' or 'hibench-terasort' in workload_types:
+            print(workload_types)
+            stop_hibench_cmd = "./workloads/hibench/stop_hibench.sh"
+            os.system(stop_hibench_cmd)
         util.log_experiment_details(self, self.experiment)
         util.log_queue_status("end", self, self.experiment)
         self.compress_logs()
