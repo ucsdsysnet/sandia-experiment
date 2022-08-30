@@ -15,4 +15,6 @@ cd $HOME/sw
 tar -xvf hadoop-3.2.4.tar.gz
 mv hadoop-3.2.4 ../hadoop
 
+sudo apt install python2
+
 
