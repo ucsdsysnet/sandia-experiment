@@ -77,9 +77,9 @@ class Experiment:
                 func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
                 func()
         if 'hibench-sort' or 'hibench-terasort' in workload_types:
-            print(workload_types)
             stop_hibench_cmd = "./workloads/hibench/stop_hibench.sh"
             os.system(stop_hibench_cmd)
+            util.collect_hibench_report(self, self.experiment)
         util.log_experiment_details(self, self.experiment)
         util.log_queue_status("end", self, self.experiment)
         self.compress_logs()

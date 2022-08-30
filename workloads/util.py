@@ -83,6 +83,15 @@ def collect_iperf_logs(exp_obj, exp_template, workload):
 def collect_memcached_logs(exp_obj, exp_template, workload):
     print("collect_memcached_logs")
 
+def collect_hibench_report(exp_obj, exp_template):
+    print('collect HiBench Report')
+    log_id = get_log_id(c.HIBENCH_LOG_ID, 0)
+    log_name = get_log_name(c.HIBENCH_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.REPORT)
+    hibench_log_cmd = 'mv $HOME/sw/HiBench/report/hibench.report {}'.format(log_name[log_id])
+    print(hibench_log_cmd)
+    os.system(hibench_log_cmd)
+    exp_obj.append_logs(log_name)
+
 def get_log_name(name, instance, exp_id, exp_time, ext_type):
     log_id = get_log_id(name, instance)
     log_name = { log_id : '/tmp/{}-i{}-{}-{}.{}'.format(name, str(instance), exp_id, exp_time, ext_type)}

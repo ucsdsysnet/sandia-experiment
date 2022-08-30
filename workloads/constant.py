@@ -8,6 +8,7 @@ SERVER_QUEUE_STATS = "server-nic-queue"
 
 JSON = "json"
 CSV = "csv"
+REPORT = "report"
 
 CX5 = "cx5"
 
@@ -24,3 +25,5 @@ MEMCACHED_CLIENT_LOG_ID = "memcached-client"
 MEMCACHED_THREAD_COUNT = 1
 MEMCACHED_CONNECTION_COUNT = 30
 MEMCACHED_REQUEST_COUNT = 10000
+
+HIBENCH_LOG_ID = "hibench-workload"
