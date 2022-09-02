@@ -19,6 +19,8 @@
             "repeat": 1,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw-iperf",
+            "client_logs": ["txrx_log", "tcpdump", "cpu_util", "interrupts", "qdisc_log", "filter_log"],
+            "server_logs": ["txrx_log", "tcpdump", "cpu_util", "interrupts", "qdisc_log", "filter_log"],
             "workloads": [
                 {
                     "iperf": {
@@ -49,6 +51,8 @@
             "repeat": 1,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw-memcached",
+            "client_logs": [],
+            "server_logs": [],
             "workloads": [
                 {
                     "memcached": {
@@ -79,6 +83,8 @@
             "repeat": 1,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw-normal",
+            "client_logs": [],
+            "server_logs": [],
             "workloads": [
                 {
                     "dummy_workload": {
@@ -115,6 +121,8 @@
             "repeat": 1,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw-hibench",
+            "client_logs": [],
+            "server_logs": [],
             "workloads": [
                 {
                     "hibench-sort": {}
@@ -140,6 +148,8 @@
             "repeat": 1,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-raw-hibench",
+            "client_logs": [],
+            "server_logs": [],
             "workloads": [
                 {
                     "hibench-terasort": {}

@@ -7,7 +7,7 @@ import pandas as pd
 
 def populate_analyzer(analyzer):
     analyzer.experiment_log
-    analyzer.nic_queue_logs
+    analyzer.txrx_logs
     analyzer.memcached_logs
     return analyzer
 

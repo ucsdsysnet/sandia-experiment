@@ -17,14 +17,14 @@ class ExperimentAnalyzer:
         self.exp_process_path = process_path + "/" + self.exp_id
 
         self._experiment_log = None
-        self._nic_queue_logs = None
+        self._txrx_logs = None
         self._iperf_client_logs = None
         self._iperf_server_logs = None
         self._memcached_logs = None
 
         self.obj_experiment_details = None 
-        self.df_nic_client_queue_stats = None 
-        self.df_nic_server_queue_stats = None 
+        self.df_client_txrx_stats = None 
+        self.df_server_txrx_stats = None 
 
         self.obj_iperf_clients = []
         self.obj_iperf_servers = []
@@ -43,20 +43,20 @@ class ExperimentAnalyzer:
             self.obj_experiment_details = exp_json
 
     @property
-    def nic_queue_logs(self):
-        client_q_log_filter = self.exp_process_path + "/" + c.CLIENT_QUEUE_STATS + "*"
+    def txrx_logs(self):
+        client_q_log_filter = self.exp_process_path + "/" + c.CLIENT_TXRX_LOG_ID + "*"
         client_q_log_list = glob.glob(client_q_log_filter)
         df_c_q = pd.read_csv(client_q_log_list[0] ,sep=',',)
-        self.df_nic_client_queue_stats = df_c_q
+        self.df_client_txrx_stats = df_c_q
         
-        server_q_log_filter = self.exp_process_path + "/" + c.SERVER_QUEUE_STATS + "*"
+        server_q_log_filter = self.exp_process_path + "/" + c.SERVER_TXRX_LOG_ID + "*"
         server_q_log_list = glob.glob(server_q_log_filter)
         if server_q_log_list:
             df_s_q = pd.read_csv(server_q_log_list[0] ,sep=',',)
-            self.df_nic_server_queue_stats = df_s_q
+            self.df_server_txrx_stats = df_s_q
 
-        # print(self.df_nic_client_queue_stats)
-        # print(self.df_nic_server_queue_stats)
+        # print(self.df_client_txrx_stats)
+        # print(self.df_server_txrx_stats)
 
     @property
     def iperf_client_logs(self):
@@ -105,7 +105,7 @@ def get_experiment_analysers(file_pattern, tar_path, process_path):
 
 # def populate_analyzer(analyzer):
 #     analyzer.experiment_log
-#     analyzer.nic_queue_logs
+#     analyzer.txrx_logs
 #     analyzer.iperf_client_logs
 #     analyzer.iperf_server_logs
 #     analyzer.memcached_logs
