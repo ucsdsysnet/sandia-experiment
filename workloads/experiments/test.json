@@ -15,13 +15,20 @@
             ],
             "username": "rukshani",
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
-            "duration": 60,
+            "duration": 30,
             "repeat": 1,
             "nic_type": "cx5",
-            "tar_location": "/tmp/data-raw-hibench",
+            "tar_location": "/tmp/data-raw-log",
+            "client_logs": ["txrx_log", "tcpdump", "cpu_util", "interrupts", "qdisc_log", "filter_log"],
+            "server_logs": ["txrx_log", "tcpdump", "cpu_util", "interrupts", "qdisc_log", "filter_log"],
             "workloads": [
                 {
-                    "hibench-terasort": {}
+                    "iperf": {
+                        "clients": 1,
+                        "server_instances": 1,
+                        "mode": "NORMAL",
+                        "parallel": 32
+                    }
                 }
             ]
         }

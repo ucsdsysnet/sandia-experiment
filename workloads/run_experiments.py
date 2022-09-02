@@ -42,10 +42,11 @@ class Experiment:
     def run(self):
         with ExitStack() as stack:
 
-            util.log_queue_status("start", self, self.experiment)
+            util.start_logs(self, self.experiment, self.experiment['client_logs'], self.experiment['server_logs'])
 
             workloads = self.experiment['workloads']
             workload_types = workloads[0].keys()
+            
             #Start servers
             for index, workload in enumerate(workload_types):
                 #Assumption - memached server instances needs to be up and populated before running experiments memcached experiments
@@ -68,6 +69,7 @@ class Experiment:
                 func = client_switcher.get(workload, lambda: "Invalid Client Experiment!")
                 func()
             time.sleep(self.experiment['duration'] + 5)
+
             #Collect logs
             for index, workload in enumerate(workload_types):
                 log_switcher = {
@@ -76,12 +78,14 @@ class Experiment:
                 }
                 func = log_switcher.get(workload, lambda: "Invalid Log Collector!")
                 func()
-        if 'hibench-sort' or 'hibench-terasort' in workload_types:
+
+        if workload_types.__contains__('hibench-sort') or workload_types.__contains__('hibench-terasort'): 
             stop_hibench_cmd = "./workloads/hibench/stop_hibench.sh"
             os.system(stop_hibench_cmd)
             util.collect_hibench_report(self, self.experiment)
+
         util.log_experiment_details(self, self.experiment)
-        util.log_queue_status("end", self, self.experiment)
+        util.stop_logs(self, self.experiment, self.experiment['client_logs'], self.experiment['server_logs'])
         self.compress_logs()
         self.cleanup_experiments()
 
