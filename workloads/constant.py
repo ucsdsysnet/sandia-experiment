@@ -2,6 +2,9 @@ CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
 IP_MODE = "IP"
 
+TEMP_LOG_LOCATION = "/tmp"
+TCPDUMP_LOCATION = "/mydata"
+
 # Generic Log Names in template json
 TXRX_LOG = "txrx_log"
 TCPDUMP_LOG = "tcpdump"
@@ -14,10 +17,12 @@ FILTER_LOG = "filter_log"
 EXPERIMENT_DETAILS_LOG_ID = "experiment-details"
 CLIENT_TXRX_LOG_ID = "txrx-client"
 SERVER_TXRX_LOG_ID = "txrx-server"
+CLIENT_TCPDUMP_LOG_ID = "tcpdump-client"
 
 JSON = "json"
 CSV = "csv"
 REPORT = "report"
+PCAP = "pcap"
 
 CX5 = "cx5"
 
