@@ -44,12 +44,12 @@ class ExperimentAnalyzer:
 
     @property
     def nic_queue_logs(self):
-        client_q_log_filter = self.exp_process_path + "/" + c.CLIENT_QUEUE_STATS + "*"
+        client_q_log_filter = self.exp_process_path + "/" + c.CLIENT_TXRX_LOG_ID + "*"
         client_q_log_list = glob.glob(client_q_log_filter)
         df_c_q = pd.read_csv(client_q_log_list[0] ,sep=',',)
         self.df_nic_client_queue_stats = df_c_q
         
-        server_q_log_filter = self.exp_process_path + "/" + c.SERVER_QUEUE_STATS + "*"
+        server_q_log_filter = self.exp_process_path + "/" + c.SERVER_TXRX_LOG_ID + "*"
         server_q_log_list = glob.glob(server_q_log_filter)
         if server_q_log_list:
             df_s_q = pd.read_csv(server_q_log_list[0] ,sep=',',)

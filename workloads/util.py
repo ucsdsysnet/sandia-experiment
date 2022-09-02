@@ -104,45 +104,45 @@ def get_log_id(name, instance):
 def start_logs(exp_obj, exp_template, client_logs, server_logs):
     print('start log - {} {}'.format(client_logs, server_logs))
     
-    if client_logs.__contains__('txrx_log'):
+    if client_logs.__contains__(c.TXRX_LOG):
         log_queue_status("start", exp_obj, exp_template)
-    if client_logs.__contains__('tcpdump'):
-        print('client {} NOT IMPLEMENTED'.format('tcpdump'))
-    if client_logs.__contains__('cpu_util'):
-        print('client {} NOT IMPLEMENTED'.format('cpu_util'))
-    if client_logs.__contains__('interrupts'):
-        print('client {} NOT IMPLEMENTED'.format('interrupts'))
-    if client_logs.__contains__('qdisc_log'):
-        print('client {} NOT IMPLEMENTED'.format('qdisc_log'))
-    if client_logs.__contains__('filter_log'):
-        print('client {} NOT IMPLEMENTED'.format('filter_log'))
+    if client_logs.__contains__(c.TCPDUMP_LOG):
+        print('client {} NOT IMPLEMENTED'.format(c.TCPDUMP_LOG))
+    if client_logs.__contains__(c.CPU_UTIL_LOG):
+        print('client {} NOT IMPLEMENTED'.format(c.CPU_UTIL_LOG))
+    if client_logs.__contains__(c.INTERRUPT_LOG):
+        print('client {} NOT IMPLEMENTED'.format(c.INTERRUPT_LOG))
+    if client_logs.__contains__(c.QDISC_LOG):
+        print('client {} NOT IMPLEMENTED'.format(c.QDISC_LOG))
+    if client_logs.__contains__(c.FILTER_LOG):
+        print('client {} NOT IMPLEMENTED'.format(c.FILTER_LOG))
 
-    if server_logs.__contains__('txrx_log'):
-        print('server {} NOT IMPLEMENTED'.format('txrx_log'))
-    if server_logs.__contains__('tcpdump'):
-        print('server {} NOT IMPLEMENTED'.format('tcpdump'))
-    if server_logs.__contains__('cpu_util'):
-        print('server {} NOT IMPLEMENTED'.format('cpu_util'))
-    if server_logs.__contains__('interrupts'):
-        print('server {} NOT IMPLEMENTED'.format('interrupts'))
-    if server_logs.__contains__('qdisc_log'):
-        print('server {} NOT IMPLEMENTED'.format('qdisc_log'))
-    if server_logs.__contains__('filter_log'):
-        print('server {} NOT IMPLEMENTED'.format('filter_log'))
+    if server_logs.__contains__(c.TXRX_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.TXRX_LOG))
+    if server_logs.__contains__(c.TCPDUMP_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.TCPDUMP_LOG))
+    if server_logs.__contains__(c.CPU_UTIL_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.CPU_UTIL_LOG))
+    if server_logs.__contains__(c.INTERRUPT_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.INTERRUPT_LOG))
+    if server_logs.__contains__(c.QDISC_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.QDISC_LOG))
+    if server_logs.__contains__(c.FILTER_LOG):
+        print('server {} NOT IMPLEMENTED'.format(c.FILTER_LOG))
 
 def stop_logs(exp_obj, exp_template, client_logs, server_logs):
     print('stop log - {} {}'.format(client_logs, server_logs))
-    if client_logs.__contains__('txrx_log'):
+    if client_logs.__contains__(c.TXRX_LOG):
         log_queue_status("end", exp_obj, exp_template)
     
 
 ############################~~~STATISTICS~~~######################
 def log_queue_status(period, exp_obj, exp_template):
     print("iteration:", period, exp_obj.iteration)
-    client_log_id = get_log_id(c.CLIENT_QUEUE_STATS, 0)
+    client_log_id = get_log_id(c.CLIENT_TXRX_LOG_ID, 0)
     iface_name = get_interface_name(exp_template['client_list'][0])
     if period == "start":
-        client_log_name = get_log_name(c.CLIENT_QUEUE_STATS, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
+        client_log_name = get_log_name(c.CLIENT_TXRX_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
