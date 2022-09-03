@@ -101,14 +101,15 @@ class Experiment:
             logging.warning('Found no logs for this experiment to compress')
         else:
             logging.info('Compressing {} logs into tarfile: {}'.format(len(logs_to_compress), self.tar_filename))
-            cmd = 'cd /tmp && tar -czf {} {} && rm -f {}'.format(
+            cmd = 'cd {} && tar -czf {} {} && rm -f {}'.format(
+                c.TEMP_LOG_LOCATION,
                 os.path.basename(self.tar_filename),
                 ' '.join(logs_to_compress),
                 ' && rm -f '.join(logs_to_compress))
             proc_compress = subprocess.Popen(cmd, shell=True)
             self.append_processes(proc_compress)
             os.makedirs(self.experiment['tar_location'], exist_ok = True)
-            proc_mov = subprocess.Popen('mv /tmp/{} {}'.format(self.tar_filename, self.experiment['tar_location']), shell=True)
+            proc_mov = subprocess.Popen('mv {}/{} {}'.format(c.TEMP_LOG_LOCATION, self.tar_filename, self.experiment['tar_location']), shell=True)
             self.append_processes(proc_mov)
         
     def append_processes(self, proc):

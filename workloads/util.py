@@ -59,7 +59,7 @@ def get_memcached_client_cmd(server_ip, server_port, log_file_name):
 def log_experiment_details(exp_obj, exp_template):
     # print(exp_template)
     log_id = get_log_id(c.EXPERIMENT_DETAILS_LOG_ID, 0)
-    log_name = get_log_name(c.EXPERIMENT_DETAILS_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.JSON)
+    log_name = get_log_name(c.TEMP_LOG_LOCATION, c.EXPERIMENT_DETAILS_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.JSON)
     exp_obj.append_logs(log_name)
     with open(log_name[log_id], 'w') as f:
         json.dump(exp_template, f)
@@ -67,11 +67,12 @@ def log_experiment_details(exp_obj, exp_template):
 def collect_iperf_logs(exp_obj, exp_template, workload):
     all_server_files = '*{}-{}.json"'.format(exp_obj.id, exp_obj.exp_time)
     
-    cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} /tmp/'.format(
+    cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} {}/'.format(
         exp_template['key_filename'],
         exp_template['username'],
         exp_template['server_list_wan'][0],
-        os.path.join('"/tmp', all_server_files))
+        os.path.join('"{}'.format(c.TEMP_LOG_LOCATION), all_server_files),
+        c.TEMP_LOG_LOCATION)
 
     print("collect server logs", cmd)
     subprocess.run(cmd, check=True, shell=True,
@@ -86,15 +87,15 @@ def collect_memcached_logs(exp_obj, exp_template, workload):
 def collect_hibench_report(exp_obj, exp_template):
     print('collect HiBench Report')
     log_id = get_log_id(c.HIBENCH_LOG_ID, 0)
-    log_name = get_log_name(c.HIBENCH_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.REPORT)
+    log_name = get_log_name(c.TEMP_LOG_LOCATION, c.HIBENCH_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.REPORT)
     hibench_log_cmd = 'mv $HOME/sw/HiBench/report/hibench.report {}'.format(log_name[log_id])
     print(hibench_log_cmd)
     os.system(hibench_log_cmd)
     exp_obj.append_logs(log_name)
 
-def get_log_name(name, instance, exp_id, exp_time, ext_type):
+def get_log_name(location, name, instance, exp_id, exp_time, ext_type):
     log_id = get_log_id(name, instance)
-    log_name = { log_id : '/tmp/{}-i{}-{}-{}.{}'.format(name, str(instance), exp_id, exp_time, ext_type)}
+    log_name = { log_id : '{}/{}-i{}-{}-{}.{}'.format(location, name, str(instance), exp_id, exp_time, ext_type)}
     return log_name
 
 def get_log_id(name, instance):
@@ -107,6 +108,7 @@ def start_logs(exp_obj, exp_template, client_logs, server_logs):
     if client_logs.__contains__(c.TXRX_LOG):
         log_queue_status("start", exp_obj, exp_template)
     if client_logs.__contains__(c.TCPDUMP_LOG):
+        # run_tcpdump_local(exp_obj, exp_template)
         print('client {} NOT IMPLEMENTED'.format(c.TCPDUMP_LOG))
     if client_logs.__contains__(c.CPU_UTIL_LOG):
         print('client {} NOT IMPLEMENTED'.format(c.CPU_UTIL_LOG))
@@ -134,7 +136,22 @@ def stop_logs(exp_obj, exp_template, client_logs, server_logs):
     print('stop log - {} {}'.format(client_logs, server_logs))
     if client_logs.__contains__(c.TXRX_LOG):
         log_queue_status("end", exp_obj, exp_template)
-    
+    if client_logs.__contains__(c.TCPDUMP_LOG):
+        kill_tcpdump_local()
+
+def run_tcpdump_local(exp_obj, exp_template):
+    client_log_id = get_log_id(c.CLIENT_TCPDUMP_LOG_ID, 0)
+    iface_name = get_interface_name(exp_template['client_list'][0])
+    client_log_name = get_log_name(c.TCPDUMP_LOCATION, c.CLIENT_TCPDUMP_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.PCAP)
+    exp_obj.append_logs(client_log_name)
+    start_tcpdump_cmd = ('sudo tcpdump -n --packet-buffered '
+                                 '--snapshot-length=65535 '
+                                 '--interface={} '
+                                 '-w {}'.format(iface_name, client_log_name[client_log_id]))
+    os.system(start_tcpdump_cmd + " &")
+
+def kill_tcpdump_local():
+    run_local_command('sudo pkill -9 tcpdump', True)
 
 ############################~~~STATISTICS~~~######################
 def log_queue_status(period, exp_obj, exp_template):
@@ -142,7 +159,7 @@ def log_queue_status(period, exp_obj, exp_template):
     client_log_id = get_log_id(c.CLIENT_TXRX_LOG_ID, 0)
     iface_name = get_interface_name(exp_template['client_list'][0])
     if period == "start":
-        client_log_name = get_log_name(c.CLIENT_TXRX_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
+        client_log_name = get_log_name(c.TEMP_LOG_LOCATION, c.CLIENT_TXRX_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
         exp_obj.append_logs(client_log_name)
 
         if exp_template['nic_type'] == c.CX5:
