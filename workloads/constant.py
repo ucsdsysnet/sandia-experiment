@@ -2,6 +2,7 @@ CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
 IP_MODE = "IP"
 
+# Note: Both the client and the server should have the same location to store logs
 TEMP_LOG_LOCATION = "/tmp"
 TCPDUMP_LOCATION = "/mydata"
 

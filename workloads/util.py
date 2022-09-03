@@ -67,11 +67,12 @@ def log_experiment_details(exp_obj, exp_template):
 def collect_iperf_logs(exp_obj, exp_template, workload):
     all_server_files = '*{}-{}.json"'.format(exp_obj.id, exp_obj.exp_time)
     
-    cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} /tmp/'.format(
+    cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {}@{}:{} {}/'.format(
         exp_template['key_filename'],
         exp_template['username'],
         exp_template['server_list_wan'][0],
-        os.path.join('"/tmp', all_server_files))
+        os.path.join('"{}'.format(c.TEMP_LOG_LOCATION), all_server_files),
+        c.TEMP_LOG_LOCATION)
 
     print("collect server logs", cmd)
     subprocess.run(cmd, check=True, shell=True,
