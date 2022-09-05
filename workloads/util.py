@@ -106,7 +106,7 @@ def start_logs(exp_obj, exp_template, client_logs, server_logs):
     print('start log - {} {}'.format(client_logs, server_logs))
     
     if client_logs.__contains__(c.TXRX_LOG):
-        log_queue_status("start", exp_obj, exp_template)
+        log_queue_status("start", exp_obj, exp_template, c.RUN_ON_CLIENT, c.CLIENT_TXRX_LOG_ID)
     if client_logs.__contains__(c.TCPDUMP_LOG):
         # run_tcpdump_local(exp_obj, exp_template)
         print('client {} NOT IMPLEMENTED'.format(c.TCPDUMP_LOG))
@@ -120,7 +120,7 @@ def start_logs(exp_obj, exp_template, client_logs, server_logs):
         print('client {} NOT IMPLEMENTED'.format(c.FILTER_LOG))
 
     if server_logs.__contains__(c.TXRX_LOG):
-        print('server {} NOT IMPLEMENTED'.format(c.TXRX_LOG))
+        log_queue_status("start", exp_obj, exp_template, c.RUN_ON_SERVER, c.SERVER_TXRX_LOG_ID)
     if server_logs.__contains__(c.TCPDUMP_LOG):
         print('server {} NOT IMPLEMENTED'.format(c.TCPDUMP_LOG))
     if server_logs.__contains__(c.CPU_UTIL_LOG):
@@ -135,9 +135,12 @@ def start_logs(exp_obj, exp_template, client_logs, server_logs):
 def stop_logs(exp_obj, exp_template, client_logs, server_logs):
     print('stop log - {} {}'.format(client_logs, server_logs))
     if client_logs.__contains__(c.TXRX_LOG):
-        log_queue_status("end", exp_obj, exp_template)
+        log_queue_status("end", exp_obj, exp_template, c.RUN_ON_CLIENT, c.CLIENT_TXRX_LOG_ID)
     if client_logs.__contains__(c.TCPDUMP_LOG):
         kill_tcpdump_local()
+
+    if server_logs.__contains__(c.TXRX_LOG):
+        log_queue_status("end", exp_obj, exp_template, c.RUN_ON_SERVER, c.SERVER_TXRX_LOG_ID)
 
 def run_tcpdump_local(exp_obj, exp_template):
     client_log_id = get_log_id(c.CLIENT_TCPDUMP_LOG_ID, 0)
@@ -154,31 +157,50 @@ def kill_tcpdump_local():
     run_local_command('sudo pkill -9 tcpdump', True)
 
 ############################~~~STATISTICS~~~######################
-def log_queue_status(period, exp_obj, exp_template):
+def log_queue_status(period, exp_obj, exp_template, run_on, logid):
     print("iteration:", period, exp_obj.iteration)
-    client_log_id = get_log_id(c.CLIENT_TXRX_LOG_ID, 0)
+    log_id = get_log_id(logid, 0)
     iface_name = get_interface_name(exp_template['client_list'][0])
     if period == "start":
-        client_log_name = get_log_name(c.TEMP_LOG_LOCATION, c.CLIENT_TXRX_LOG_ID, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
-        exp_obj.append_logs(client_log_name)
+        log_name = get_log_name(c.TEMP_LOG_LOCATION, logid, 0, exp_obj.id, exp_obj.exp_time, c.CSV)
+        exp_obj.append_logs(log_name)
 
         if exp_template['nic_type'] == c.CX5:
-            df_start_merged = get_q_dataframe(period, iface_name)
-            df_start_merged.to_csv(client_log_name[client_log_id], header=False, index=True)
+            df_start_merged = get_q_dataframe(period, iface_name, run_on, exp_template)
+            df_start_merged.to_csv(log_name[log_id], header=False, index=True)
     else:
         if exp_template['nic_type'] == c.CX5:
-            df_start = pd.read_csv(exp_obj.all_logs[0][client_log_id] ,sep=',', 
-                    names=["q_number", "start_rx", "start_tx"])
-            df_end = get_q_dataframe(period, iface_name)
-            different_start_cols = df_start.columns.difference(df_end.columns)
-            df_start_cols = df_start[different_start_cols]
-            df_all_merged = pd.merge(df_end, df_start_cols, left_index=True, right_index=True, how='inner')
-            df_all_merged.to_csv(exp_obj.all_logs[0][client_log_id], header=True, index=True)
+            for log in exp_obj.all_logs:
+                keysList = list(log.keys())
+                if log_id in keysList:
+                    print("correct txrx log:", log[log_id])
+                    df_start = pd.read_csv(log[log_id] ,sep=',', 
+                            names=["q_number", "start_rx", "start_tx"])
+                    df_end = get_q_dataframe(period, iface_name, run_on, exp_template)
+                    different_start_cols = df_start.columns.difference(df_end.columns)
+                    df_start_cols = df_start[different_start_cols]
+                    df_all_merged = pd.merge(df_end, df_start_cols, left_index=True, right_index=True, how='inner')
+                    df_all_merged.to_csv(log[log_id], header=True, index=True)
             
-def get_queue_stats(period, iface_name, tx_or_rx):
+def get_queue_stats(period, iface_name, tx_or_rx, run_on, exp_template):
     #TODO: remote command when client is remote
     df = pd.DataFrame()
-    out_str = run_local_command('ethtool -S {} | grep "{}[0-9]*_packets"'.format(iface_name, tx_or_rx), True)
+    if (run_on == c.RUN_ON_CLIENT):
+        out_str = run_local_command('ethtool -S {} | grep "{}[0-9]*_packets"'.format(iface_name, tx_or_rx), True)
+    if (run_on == c.RUN_ON_SERVER):
+        cmd = 'ethtool -S {} | grep "{}[0-9]*_packets"'.format(iface_name, tx_or_rx)
+        print("run on server: {}".format(cmd))
+        with get_ssh_client(ip_addr=exp_template['server_list_wan'][0],
+                                username=exp_template['username'],
+                                key_filename=exp_template['key_filename']) as ssh_client:
+            _, stdout, stderr = exec_command(ssh_client,
+                                                 exp_template['server_list_wan'][0],
+                                                 cmd)
+            # actually should return a bad exit status
+            # exit_status =  stdout.channel.recv_exit_status()
+            stdout_str = stdout.read()
+            out_str = stdout_str.decode("utf-8") 
+            # print("server out_str: {}".format(out_str))
     queues = out_str.split("\n")
     q_numbers = []
     packets_per_queue = []
@@ -200,9 +222,9 @@ def extract_queue_number(queue_details):
     else:
         return q_number
 
-def get_q_dataframe(period, iface_name):
-    df_tx = get_queue_stats(period, iface_name, 'tx')
-    df_rx = get_queue_stats(period, iface_name, 'rx')
+def get_q_dataframe(period, iface_name, run_on, exp_template):
+    df_tx = get_queue_stats(period, iface_name, 'tx', run_on, exp_template)
+    df_rx = get_queue_stats(period, iface_name, 'rx', run_on, exp_template)
     different_tx_cols = df_tx.columns.difference(df_rx.columns)
     df_tx_cols = df_tx[different_tx_cols]
     df_merged = pd.merge(df_rx, df_tx_cols, left_index=True, right_index=True, how='inner')

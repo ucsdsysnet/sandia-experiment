@@ -25,6 +25,9 @@ CSV = "csv"
 REPORT = "report"
 PCAP = "pcap"
 
+RUN_ON_CLIENT = "client"
+RUN_ON_SERVER = "server"
+
 CX5 = "cx5"
 
 BPS_TO_GBPS = 0.000000001
