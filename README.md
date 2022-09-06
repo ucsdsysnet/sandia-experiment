@@ -35,7 +35,9 @@
 # Run experiments
 
 ### Describe your experiements in a json file (sandia-experiment/workloads/template.json) and run 
-- python3 workloads/run_experiments.py template.json
+```
+python3 workloads/run_experiments.py template.json
+```
 
 - There are three modes
     - CLUSTER
@@ -58,7 +60,7 @@
     - Control node can behave as one of the clients. 
 
 ### Workloads
-- NOTE: Memcached experiments assume that the memcached server is up and populated with data. Instrcutions on setting up memcached can be find in sandia-experiment/workloads/memcached/instrcutions.md file. 
+- NOTE: Memcached experiments assume that the memcached server is up and populated with data. Instrcutions on setting up memcached can be find in sandia-experiment/workloads/memcached instrcutions.md file. 
 
 # Experiment Analyzer
 <!-- - Generic
