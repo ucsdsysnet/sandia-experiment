@@ -31,6 +31,7 @@ JSON = "json"
 CSV = "csv"
 REPORT = "report"
 PCAP = "pcap"
+TXT = "txt"
 
 # Iperf
 IPERF_SERVER_PORT = 5100
@@ -50,8 +51,7 @@ MEMCACHED_REQUEST_COUNT = 10000
 HIBENCH_LOG_ID = "hibench-workload"
 
 # Sockperf
-SOCKPERF_SERVER_PORT = 6100
-SOCKPERF_CLIENT_PORT = 6100 
+SOCKPERF_SERVER_PORT = 6100 
 SOCKPERF_SERVER_LOG_ID = "sockperf-server"
 SOCKPERF_CLIENT_LOG_ID = "sockperf-client"
 SOCKPERF_IPPORT_LIST_FILENAME = "sockperf_ipport_list"

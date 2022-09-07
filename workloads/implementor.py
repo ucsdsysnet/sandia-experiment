@@ -272,7 +272,7 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
                     stdout = subprocess.DEVNULL,
                     stderr=subprocess.PIPE)
 
-    start_server_cmd = "sockperf server -f {}".format(sockperf_ipport_list_path)
+    start_server_cmd = "sockperf server -f {} --threads-num 32 ".format(sockperf_ipport_list_path)
     start_server = RemoteCommand(start_server_cmd,
                                 exp_template['server_list_wan'][0],
                                 username=exp_template['username'],
@@ -280,3 +280,57 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
                                 key_filename=exp_template['key_filename'], sudo=False)
 
     stack.enter_context(start_server())
+
+def start_sockperf_clients(exp_obj, exp_template, workload, stack):
+    print("mode:", workload['mode'])
+    if (workload['mode'] == c.CLUSTER_MODE):
+        parallel_processes = workload['parallel']
+        server_port = c.SOCKPERF_SERVER_PORT
+
+        for x in range(1, parallel_processes+1):
+            log_id = util.get_log_id(c.SOCKPERF_CLIENT_LOG_ID, x)
+            log_name = util.get_log_name(c.TEMP_LOG_LOCATION, c.SOCKPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.exp_time, c.TXT)
+            exp_obj.append_logs(log_name)
+
+            server_base_ip = exp_template['server_list'][0]
+            octets = server_base_ip.split('.')
+            last_octet = int(octets[3]) + x
+            server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
+
+            start_client_cmd = util.get_sockperf_client_cmd(server_ip, 
+                                                        server_port,
+                                                        exp_template['duration'],
+                                                        log_name[log_id])
+            server_port = server_port + 1
+            print("sockperf client cmd>", start_client_cmd)
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
+
+    else:
+        client_instances = workload['clients']
+        len_server_instances = workload['server_instances']
+        # client_port = c.IPERF_CLIENT_PORT
+        # server_port = c.IPERF_SERVER_PORT
+
+        # server_ports = [server_port]
+        # for i in range(len_server_instances-1):
+        #     server_port = server_port + 1
+        #     server_ports.append(server_port)
+
+        # print("server ports:", server_ports)
+
+        # for x in range(client_instances):
+        #     log_id = util.get_log_id(c.IPERF_CLIENT_LOG_ID, x)
+        #     log_name = util.get_log_name(c.TEMP_LOG_LOCATION, c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.exp_time, c.JSON)
+        #     exp_obj.append_logs(log_name)
+
+        #     server_port_index = x % len_server_instances
+        #     start_client_cmd = util.get_iperf_client_cmd(exp_template['server_list'][0], 
+        #                                                 server_ports[server_port_index], 
+        #                                                 exp_template['client_list'][0],
+        #                                                 client_port,
+        #                                                 exp_template['duration'],
+        #                                                 log_name[log_id])
+
+        #     print("iperf client cmd>", start_client_cmd)
+        #     client_port = client_port + 1
+        #     run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)

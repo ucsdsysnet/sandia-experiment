@@ -63,6 +63,7 @@ class Experiment:
             for index, workload in enumerate(workload_types):
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
+                    'sockperf': lambda: impl.start_sockperf_clients(self, self.experiment, workloads[0]["sockperf"], stack),
                     'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack),
                     'hibench-sort': lambda: impl.run_hibench_sort(self, self.experiment, None, stack),
                     'hibench-terasort': lambda: impl.run_hibench_terasort(self, self.experiment, None, stack)

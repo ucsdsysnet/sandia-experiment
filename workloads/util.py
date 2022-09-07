@@ -53,6 +53,19 @@ def get_memcached_client_cmd(server_ip, server_port, log_file_name):
                                     c.MEMCACHED_REQUEST_COUNT, 
                                     log_file_name)
     return start_client_cmd
+
+def get_sockperf_client_cmd(server_ip, server_port, duration, log_file_name):
+    start_client_cmd = ('sockperf tp '
+                            '-i {} '
+                            '-p {} '
+                            '--time {} '
+                            '--msg-size=1472 '
+                            '--giga-size >> {} ').format(
+                                server_ip,
+                                server_port,
+                                duration, 
+                                log_file_name)
+    return start_client_cmd
     
 ############################~~~LOG IMPLEMENTATION~~~######################
 
