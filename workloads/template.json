@@ -155,6 +155,105 @@
                     "hibench-terasort": {}
                 }
             ]
+        },
+        {
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.218.254"
+            ],
+            "client_list_wan": [
+                "128.110.218.253"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "duration": 60,
+            "repeat": 1,
+            "nic_type": "cx5",
+            "tar_location": "/tmp/data-sockperf-pp",
+            "client_logs": [],
+            "server_logs": [],
+            "workloads": [
+                {
+                    "sockperf": {
+                        "clients": 5,
+                        "server_instances": 2,
+                        "mode": "NORMAL",
+                        "parallel": 32,
+                        "sockperf_client_mode": "ping-pong"
+                    }
+                }
+            ]
+        },
+        {
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.218.254"
+            ],
+            "client_list_wan": [
+                "128.110.218.253"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "duration": 60,
+            "repeat": 1,
+            "nic_type": "cx5",
+            "tar_location": "/tmp/data-sockperf-ul",
+            "client_logs": [],
+            "server_logs": [],
+            "workloads": [
+                {
+                    "sockperf": {
+                        "clients": 5,
+                        "server_instances": 2,
+                        "mode": "NORMAL",
+                        "parallel": 32,
+                        "sockperf_client_mode": "under-load"
+                    }
+                }
+            ]
+        },
+        {
+            "server_list": [
+                "10.10.20.100"
+            ],
+            "client_list": [
+                "10.10.10.100"
+            ],
+            "server_list_wan": [
+                "128.110.218.254"
+            ],
+            "client_list_wan": [
+                "128.110.218.253"
+            ],
+            "username": "rukshani",
+            "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
+            "duration": 60,
+            "repeat": 1,
+            "nic_type": "cx5",
+            "tar_location": "/tmp/data-sockperf-tp",
+            "client_logs": [],
+            "server_logs": [],
+            "workloads": [
+                {
+                    "sockperf": {
+                        "clients": 5,
+                        "server_instances": 2,
+                        "mode": "NORMAL",
+                        "parallel": 32,
+                        "sockperf_client_mode": "throughput"
+                    }
+                }
+            ]
         }
     ]
 }

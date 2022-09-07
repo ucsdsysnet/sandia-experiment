@@ -52,6 +52,7 @@ class Experiment:
                 #Assumption - memached server instances needs to be up and populated before running experiments memcached experiments
                 server_switcher = {
                     'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack),
+                    'sockperf': lambda: impl.start_sockperf_server(self, self.experiment, workloads[0]["sockperf"], stack),
                     'hibench-sort': lambda: impl.prepare_hibench_sort(self, self.experiment, None, stack),
                     'hibench-terasort': lambda: impl.prepare_hibench_terasort(self, self.experiment, None, stack)
                 }
@@ -62,6 +63,7 @@ class Experiment:
             for index, workload in enumerate(workload_types):
                 client_switcher = {
                     'iperf': lambda: impl.start_iperf_clients(self, self.experiment, workloads[0]["iperf"], stack),
+                    'sockperf': lambda: impl.start_sockperf_clients(self, self.experiment, workloads[0]["sockperf"], stack),
                     'memcached': lambda: impl.start_memcached_clients(self, self.experiment, workloads[0]["memcached"], stack),
                     'hibench-sort': lambda: impl.run_hibench_sort(self, self.experiment, None, stack),
                     'hibench-terasort': lambda: impl.run_hibench_terasort(self, self.experiment, None, stack)
@@ -111,6 +113,9 @@ class Experiment:
             os.makedirs(self.experiment['tar_location'], exist_ok = True)
             proc_mov = subprocess.Popen('mv {}/{} {}'.format(c.TEMP_LOG_LOCATION, self.tar_filename, self.experiment['tar_location']), shell=True)
             self.append_processes(proc_mov)
+        # Remove sockperf ip:port list file
+        sockperf_ipport_list_path = c.TEMP_LOG_LOCATION + "/" + c.SOCKPERF_IPPORT_LIST_FILENAME
+        subprocess.Popen("rm -rf {}".format(sockperf_ipport_list_path), shell=True)
         
     def append_processes(self, proc):
         if proc == -1:
