@@ -112,6 +112,9 @@ class Experiment:
             os.makedirs(self.experiment['tar_location'], exist_ok = True)
             proc_mov = subprocess.Popen('mv {}/{} {}'.format(c.TEMP_LOG_LOCATION, self.tar_filename, self.experiment['tar_location']), shell=True)
             self.append_processes(proc_mov)
+        # Remove sockperf ip:port list file
+        sockperf_ipport_list_path = c.TEMP_LOG_LOCATION + "/" + c.SOCKPERF_IPPORT_LIST_FILENAME
+        subprocess.Popen("rm -rf {}".format(sockperf_ipport_list_path), shell=True)
         
     def append_processes(self, proc):
         if proc == -1:

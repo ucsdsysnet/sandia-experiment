@@ -4,6 +4,7 @@ from contextlib import contextmanager, ExitStack
 import os
 import logging
 import util
+import subprocess
 
 @contextmanager
 def run_as_local_with_context(start_client_cmd):
@@ -236,6 +237,7 @@ def run_hibench_terasort(exp_obj, exp_template, workload, stack):
 ###################~~~~SOCKPERF~~~~##########################
 def start_sockperf_server(exp_obj, exp_template, workload, stack):
     print("Start sockperf server")
+    sockperf_ipport_list_path = c.TEMP_LOG_LOCATION + "/" + c.SOCKPERF_IPPORT_LIST_FILENAME
     if (workload['mode'] == c.CLUSTER_MODE):
         parallel_processes = workload['parallel']
         server_port = c.SOCKPERF_SERVER_PORT
@@ -245,7 +247,8 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
             last_octet = int(octets[3]) + x
             server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
             print("server ip:port> {}:{}".format(server_ip, server_port))
-            # TODO: Write to temp file
+            with open(sockperf_ipport_list_path, 'a') as f:
+                f.write("{}:{}\n".format(server_ip, server_port))
             server_port = server_port + 1
     else:
         server_instances = workload['server_instances']
@@ -253,5 +256,27 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
         for x in range(server_instances):
             server_base_ip = exp_template['server_list'][0]
             print("server ip:port> {}:{}".format(server_base_ip, server_port))
-            # TODO: Write to temp file
+            with open(sockperf_ipport_list_path, 'a') as f:
+                f.write("{}:{}\n".format(server_base_ip, server_port))
             server_port = server_port + 1
+
+    # Copy sockperf ip:port list file to server
+    cmd = 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i {} {} {}@{}:{} '.format(
+        exp_template['key_filename'],
+        sockperf_ipport_list_path,
+        exp_template['username'],
+        exp_template['server_list_wan'][0],
+        c.TEMP_LOG_LOCATION)
+
+    subprocess.run(cmd, check=True, shell=True,
+                    stdout = subprocess.DEVNULL,
+                    stderr=subprocess.PIPE)
+
+    start_server_cmd = "sockperf server -f {}".format(sockperf_ipport_list_path)
+    start_server = RemoteCommand(start_server_cmd,
+                                exp_template['server_list_wan'][0],
+                                username=exp_template['username'],
+                                # logs=[log_name[log_id]],
+                                key_filename=exp_template['key_filename'], sudo=False)
+
+    stack.enter_context(start_server())
