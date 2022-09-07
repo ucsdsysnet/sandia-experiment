@@ -12,3 +12,9 @@ cd $HOME/sw/sockperf/
 ./configure
 make
 sudo make install
+
+# under-load (ul)      Run sockperf client for latency under load test.
+# ping-pong (pp)       Run sockperf client for latency test in ping pong mode.
+# playback (pb)        Run sockperf client for latency test using playback of predefined traffic, based on timeline and message size.
+# throughput (tp)      Run sockperf client for one way throughput test.
+# server (sr)          Run sockperf as a server.

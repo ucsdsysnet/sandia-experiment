@@ -238,8 +238,10 @@ def run_hibench_terasort(exp_obj, exp_template, workload, stack):
 def start_sockperf_server(exp_obj, exp_template, workload, stack):
     print("Start sockperf server")
     sockperf_ipport_list_path = c.TEMP_LOG_LOCATION + "/" + c.SOCKPERF_IPPORT_LIST_FILENAME
+    server_thread_count = 1
     if (workload['mode'] == c.CLUSTER_MODE):
         parallel_processes = workload['parallel']
+        server_thread_count = parallel_processes
         server_port = c.SOCKPERF_SERVER_PORT
         for x in range(1, parallel_processes+1):
             server_base_ip = exp_template['server_list'][0]
@@ -252,6 +254,7 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
             server_port = server_port + 1
     else:
         server_instances = workload['server_instances']
+        server_thread_count = server_instances
         server_port = c.SOCKPERF_SERVER_PORT
         for x in range(server_instances):
             server_base_ip = exp_template['server_list'][0]
@@ -272,7 +275,7 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
                     stdout = subprocess.DEVNULL,
                     stderr=subprocess.PIPE)
 
-    start_server_cmd = "sockperf server -f {} --threads-num 32 ".format(sockperf_ipport_list_path)
+    start_server_cmd = "sockperf server -f {} --threads-num {} ".format(sockperf_ipport_list_path, server_thread_count)
     start_server = RemoteCommand(start_server_cmd,
                                 exp_template['server_list_wan'][0],
                                 username=exp_template['username'],
@@ -283,6 +286,7 @@ def start_sockperf_server(exp_obj, exp_template, workload, stack):
 
 def start_sockperf_clients(exp_obj, exp_template, workload, stack):
     print("mode:", workload['mode'])
+    sockperf_client_mode = workload['sockperf_client_mode']
     if (workload['mode'] == c.CLUSTER_MODE):
         parallel_processes = workload['parallel']
         server_port = c.SOCKPERF_SERVER_PORT
@@ -297,10 +301,22 @@ def start_sockperf_clients(exp_obj, exp_template, workload, stack):
             last_octet = int(octets[3]) + x
             server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
 
-            start_client_cmd = util.get_sockperf_client_cmd(server_ip, 
-                                                        server_port,
-                                                        exp_template['duration'],
-                                                        log_name[log_id])
+            if sockperf_client_mode == c.SOCKPERF_THROUGHPUT:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("tp", server_ip, 
+                                                            server_port,
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
+            elif sockperf_client_mode == c.SOCKPERF_LATENCY_UNDER_LOAD:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("ul", exp_template['server_list'][0], 
+                                                            server_port, 
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
+            elif sockperf_client_mode == c.SOCKPERF_LATENCY_PING_PONG:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("pp", exp_template['server_list'][0], 
+                                                            server_port,
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
+
             server_port = server_port + 1
             print("sockperf client cmd>", start_client_cmd)
             run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
@@ -308,29 +324,36 @@ def start_sockperf_clients(exp_obj, exp_template, workload, stack):
     else:
         client_instances = workload['clients']
         len_server_instances = workload['server_instances']
-        # client_port = c.IPERF_CLIENT_PORT
-        # server_port = c.IPERF_SERVER_PORT
+        server_port = c.SOCKPERF_SERVER_PORT
 
-        # server_ports = [server_port]
-        # for i in range(len_server_instances-1):
-        #     server_port = server_port + 1
-        #     server_ports.append(server_port)
+        server_ports = [server_port]
+        for i in range(len_server_instances-1):
+            server_port = server_port + 1
+            server_ports.append(server_port)
 
-        # print("server ports:", server_ports)
+        print("sockperf server ports:", server_ports)
 
-        # for x in range(client_instances):
-        #     log_id = util.get_log_id(c.IPERF_CLIENT_LOG_ID, x)
-        #     log_name = util.get_log_name(c.TEMP_LOG_LOCATION, c.IPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.exp_time, c.JSON)
-        #     exp_obj.append_logs(log_name)
+        for x in range(client_instances):
+            log_id = util.get_log_id(c.SOCKPERF_CLIENT_LOG_ID, x)
+            log_name = util.get_log_name(c.TEMP_LOG_LOCATION, c.SOCKPERF_CLIENT_LOG_ID, x, exp_obj.id, exp_obj.exp_time, c.TXT)
+            exp_obj.append_logs(log_name)
 
-        #     server_port_index = x % len_server_instances
-        #     start_client_cmd = util.get_iperf_client_cmd(exp_template['server_list'][0], 
-        #                                                 server_ports[server_port_index], 
-        #                                                 exp_template['client_list'][0],
-        #                                                 client_port,
-        #                                                 exp_template['duration'],
-        #                                                 log_name[log_id])
+            server_port_index = x % len_server_instances
+            if sockperf_client_mode == c.SOCKPERF_THROUGHPUT:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("tp", exp_template['server_list'][0], 
+                                                            server_ports[server_port_index], 
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
+            elif sockperf_client_mode == c.SOCKPERF_LATENCY_UNDER_LOAD:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("ul", exp_template['server_list'][0], 
+                                                            server_ports[server_port_index], 
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
+            elif sockperf_client_mode == c.SOCKPERF_LATENCY_PING_PONG:
+                start_client_cmd = util.get_sockperf_client_tp_cmd("pp", exp_template['server_list'][0], 
+                                                            server_ports[server_port_index], 
+                                                            exp_template['duration'],
+                                                            log_name[log_id])
 
-        #     print("iperf client cmd>", start_client_cmd)
-        #     client_port = client_port + 1
-        #     run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
+            print("sockperf client cmd>", start_client_cmd)
+            run_client_command(exp_template, start_client_cmd, log_id, log_name, stack)
