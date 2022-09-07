@@ -2,6 +2,13 @@ CLUSTER_MODE = "CLUSTER"
 NORMAL_MODE = "NORMAL"
 IP_MODE = "IP"
 
+RUN_ON_CLIENT = "client"
+RUN_ON_SERVER = "server"
+
+CX5 = "cx5"
+
+BPS_TO_GBPS = 0.000000001
+
 # Note: Both the client and the server should have the same location to store logs
 TEMP_LOG_LOCATION = "/tmp"
 TCPDUMP_LOCATION = "/mydata"
@@ -25,13 +32,6 @@ CSV = "csv"
 REPORT = "report"
 PCAP = "pcap"
 
-RUN_ON_CLIENT = "client"
-RUN_ON_SERVER = "server"
-
-CX5 = "cx5"
-
-BPS_TO_GBPS = 0.000000001
-
 # Iperf
 IPERF_SERVER_PORT = 5100
 IPERF_CLIENT_PORT = 5100 
@@ -48,3 +48,9 @@ MEMCACHED_REQUEST_COUNT = 10000
 
 # HiBench
 HIBENCH_LOG_ID = "hibench-workload"
+
+# Sockperf
+SOCKPERF_SERVER_PORT = 6100
+SOCKPERF_CLIENT_PORT = 6100 
+SOCKPERF_SERVER_LOG_ID = "sockperf-server"
+SOCKPERF_CLIENT_LOG_ID = "sockperf-client"

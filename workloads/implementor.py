@@ -232,3 +232,26 @@ def prepare_hibench_terasort(exp_obj, exp_template, workload, stack):
 def run_hibench_terasort(exp_obj, exp_template, workload, stack):
     start_client_cmd = '$HOME/sw/HiBench/bin/workloads/micro/terasort/hadoop/run.sh'
     stack.enter_context(run_as_local_with_context(start_client_cmd))
+
+###################~~~~SOCKPERF~~~~##########################
+def start_sockperf_server(exp_obj, exp_template, workload, stack):
+    print("Start sockperf server")
+    if (workload['mode'] == c.CLUSTER_MODE):
+        parallel_processes = workload['parallel']
+        server_port = c.SOCKPERF_SERVER_PORT
+        for x in range(1, parallel_processes+1):
+            server_base_ip = exp_template['server_list'][0]
+            octets = server_base_ip.split('.')
+            last_octet = int(octets[3]) + x
+            server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
+            print("server ip:port> {}:{}".format(server_ip, server_port))
+            # TODO: Write to temp file
+            server_port = server_port + 1
+    else:
+        server_instances = workload['server_instances']
+        server_port = c.SOCKPERF_SERVER_PORT
+        for x in range(server_instances):
+            server_base_ip = exp_template['server_list'][0]
+            print("server ip:port> {}:{}".format(server_base_ip, server_port))
+            # TODO: Write to temp file
+            server_port = server_port + 1

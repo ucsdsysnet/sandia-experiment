@@ -52,6 +52,7 @@ class Experiment:
                 #Assumption - memached server instances needs to be up and populated before running experiments memcached experiments
                 server_switcher = {
                     'iperf': lambda: impl.start_iperf_server(self, self.experiment, workloads[0]["iperf"], stack),
+                    'sockperf': lambda: impl.start_sockperf_server(self, self.experiment, workloads[0]["sockperf"], stack),
                     'hibench-sort': lambda: impl.prepare_hibench_sort(self, self.experiment, None, stack),
                     'hibench-terasort': lambda: impl.prepare_hibench_terasort(self, self.experiment, None, stack)
                 }
