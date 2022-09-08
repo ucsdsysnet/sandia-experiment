@@ -25,9 +25,11 @@ n = 0
 for analyser_id in all_analysers:
     print("~~~~~",analyser_id, "~~~~~")
     analyzer = populate_analyzer(all_analysers[analyser_id])
+
     tp_gbps = calculate_throughput(analyzer.sockperf_log_list)
     all_tp_gbps = all_tp_gbps + tp_gbps
-    # print("Iteration {} Throughput - {} Gbps".format(n, tp_gbps))
+    print("Iteration {} Throughput - {} Gbps".format(n, tp_gbps))
+
     n = n + 1
     
 print("Avg Throughput {} Gbps".format(str(all_tp_gbps/n)))

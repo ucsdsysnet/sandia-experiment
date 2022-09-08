@@ -307,12 +307,12 @@ def start_sockperf_clients(exp_obj, exp_template, workload, stack):
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_UNDER_LOAD:
-                start_client_cmd = util.get_sockperf_client_cmd("ul", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("ul", server_ip, 
                                                             server_port, 
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_PING_PONG:
-                start_client_cmd = util.get_sockperf_client_cmd("pp", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("pp", server_ip, 
                                                             server_port,
                                                             exp_template['duration'],
                                                             log_name[log_id])
