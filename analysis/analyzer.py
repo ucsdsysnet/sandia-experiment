@@ -21,6 +21,7 @@ class ExperimentAnalyzer:
         self._iperf_client_logs = None
         self._iperf_server_logs = None
         self._memcached_logs = None
+        self._sockperf_logs = None
 
         self.obj_experiment_details = None 
         self.df_client_txrx_stats = None 
@@ -29,6 +30,7 @@ class ExperimentAnalyzer:
         self.obj_iperf_clients = []
         self.obj_iperf_servers = []
         self.obj_memcached = []
+        self.sockperf_log_list = None
 
         tar = tarfile.open(self.tar_path, "r:gz")
         tar.extractall(self.exp_process_path)
@@ -86,7 +88,14 @@ class ExperimentAnalyzer:
                 memc_json = json.load(f)
                 self.obj_memcached.append(memc_json)
         # print(self.obj_memcached)
-    
+
+    @property
+    def sockperf_logs(self):
+        sock_log_filter = self.exp_process_path + "/" + c.SOCKPERF_CLIENT_LOG_ID + "*"
+        sock_log_list = glob.glob(sock_log_filter)
+        self.sockperf_log_list = sock_log_list
+        
+
 def load_experiments(experiment_name_patterns, tar_path, process_path):
     num_local_files = 0
     for experiment_name_pattern in experiment_name_patterns:

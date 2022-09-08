@@ -302,17 +302,17 @@ def start_sockperf_clients(exp_obj, exp_template, workload, stack):
             server_ip = str(octets[0]) + "." + str(octets[1]) + "." + str(octets[2]) + "." + str(last_octet)
 
             if sockperf_client_mode == c.SOCKPERF_THROUGHPUT:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("tp", server_ip, 
+                start_client_cmd = util.get_sockperf_client_cmd("tp", server_ip, 
                                                             server_port,
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_UNDER_LOAD:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("ul", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("ul", exp_template['server_list'][0], 
                                                             server_port, 
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_PING_PONG:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("pp", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("pp", exp_template['server_list'][0], 
                                                             server_port,
                                                             exp_template['duration'],
                                                             log_name[log_id])
@@ -340,17 +340,17 @@ def start_sockperf_clients(exp_obj, exp_template, workload, stack):
 
             server_port_index = x % len_server_instances
             if sockperf_client_mode == c.SOCKPERF_THROUGHPUT:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("tp", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("tp", exp_template['server_list'][0], 
                                                             server_ports[server_port_index], 
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_UNDER_LOAD:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("ul", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("ul", exp_template['server_list'][0], 
                                                             server_ports[server_port_index], 
                                                             exp_template['duration'],
                                                             log_name[log_id])
             elif sockperf_client_mode == c.SOCKPERF_LATENCY_PING_PONG:
-                start_client_cmd = util.get_sockperf_client_tp_cmd("pp", exp_template['server_list'][0], 
+                start_client_cmd = util.get_sockperf_client_cmd("pp", exp_template['server_list'][0], 
                                                             server_ports[server_port_index], 
                                                             exp_template['duration'],
                                                             log_name[log_id])

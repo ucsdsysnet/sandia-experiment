@@ -238,7 +238,7 @@
             "username": "rukshani",
             "key_filename": "/users/rukshani/.ssh/rukshani_cloudlab.pem",
             "duration": 60,
-            "repeat": 1,
+            "repeat": 5,
             "nic_type": "cx5",
             "tar_location": "/tmp/data-sockperf-tp",
             "client_logs": [],
